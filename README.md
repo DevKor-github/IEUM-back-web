@@ -1,73 +1,35 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# IEUM APIs
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Flow
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<img src="./.github/github-flow.png" width="650" />
 
-## Description
+#### 1. Notion의 스프린트 보드에 새로운 작업을 추가합니다.
+#### 2. 해당 작업에 대한 Issue를 생성하고, 담당자를 할당합니다.
+#### 3. 해당하는 작업을 위한 feature 브랜치를 main 브랜치에서 체크아웃하여 작업을 시작합니다.
+  - 작업하는 기능이 명확히 드러나도록 네이밍해주세요.
+    - ex) feature/oauth-instagram
+#### 4. 작업 중에는 정해진 컨벤션을 따라 변경 사항을 커밋으로 저장하고 Push합니다.
+  - 작업 상황을 알 수 있게 작업 중에 PR을 Draft Mode로 생성하는 것을 권장합니다.
+#### 5. 작업이 완료된 브랜치는 Pull Request를 생성하여 코드 리뷰를 요청합니다.
+#### 6. 코드 리뷰를 거쳐 문제가 없다면, main 브랜치로 해당 브랜치를 병합합니다.
+#### 7. Notion에 작업의 진행 상황을 업데이트합니다.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 커밋 컨벤션
+| 제목 태그 이름 | 설명 |
+| --- | --- |
+| feat | 새로운 기능을 추가 |
+| fix | 버그 수정 |
+| style | 코드 포맷 변경, 세미 콜론 누락 등 (프로덕션 코드 변경 X) |
+| refactor | 코드 리팩토링 |
+| comment | 필요한 주석 추가 및 변경 |
+| docs | 문서 수정 |
+| test | 테스트 추가, 테스트 리팩토링 (프로덕션 코드 변경 X) |
+| chore | 빌드 테스트 업데이트, 패키지 매니저를 설정하는 경우 (프로덕션 코드 변경 X) |
+| rename | 파일 혹은 폴더명을 수정하거나 옮기는 작업만인 경우 |
+| remove | 파일을 삭제하는 작업만 수행한 경우 |
+| !BREAKING CHANGE | 커다란 API 변경의 경우 |
+| !HOTFIX | 급하게 치명적인 버그를 고쳐야하는 경우 |
 
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- 제목 이외에, 무엇을 왜 변경했는지에 관한 부연설명이 필요할 경우, 줄바꿈 뒤 본문을 작성해주세요.
+- 영문과 한글 모두 상관없으나, 내용을 이해하기 쉽도록 명료하게 작성해주세요.
