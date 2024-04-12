@@ -1,7 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { ApiOperation } from '@nestjs/swagger';
-import { SearchByTextReqDto } from './dtos/search-by-text-req.dto';
+import {
+  GetPhotoByNameReqDto,
+  SearchByTextReqDto,
+} from './dtos/search-by-text-req.dto';
 
 @Controller('place')
 export class PlaceController {
@@ -10,6 +13,12 @@ export class PlaceController {
   @ApiOperation({ summary: 'Search place by text' })
   @Post()
   async searchByText(@Body() searchByTextReqDto: SearchByTextReqDto) {
-    return this.placeService.searchByText(searchByTextReqDto.text);
+    return await this.placeService.searchByText(searchByTextReqDto.text);
+  }
+
+  @ApiOperation({ summary: 'Get place photo' })
+  @Post('photo')
+  async getPlacePhoto(@Body() getPhotoByNameReqDto: GetPhotoByNameReqDto) {
+    return await this.placeService.getPlacePhoto(getPhotoByNameReqDto.text);
   }
 }
