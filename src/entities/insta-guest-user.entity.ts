@@ -18,7 +18,7 @@ export class InstaGuestUser {
 
   @OneToMany(
     () => InstaGuestCollection,
-    (instaGuestCollection) => instaGuestCollection.user,
+    (instaGuestCollection) => instaGuestCollection.instaGuestUser,
   )
   instaGuestCollections: InstaGuestCollection[];
 }
