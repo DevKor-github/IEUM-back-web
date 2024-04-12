@@ -12,13 +12,13 @@ export class PlaceController {
 
   @ApiOperation({ summary: 'Search place by text' })
   @Post()
-  async searchByText(@Body() searchByTextReqDto: SearchByTextReqDto) {
-    return await this.placeService.searchByText(searchByTextReqDto.text);
+  async searchPlaceByText(@Body() searchByTextReqDto: SearchByTextReqDto) {
+    return await this.placeService.searchPlaceByText(searchByTextReqDto.text);
   }
 
-  @ApiOperation({ summary: 'Get place photo' })
-  @Post('photo')
-  async getPlacePhoto(@Body() getPhotoByNameReqDto: GetPhotoByNameReqDto) {
-    return await this.placeService.getPlacePhoto(getPhotoByNameReqDto.text);
-  }
+  // @ApiOperation({ summary: 'Get place photo' })
+  // @Post('photo')
+  // async getPlacePhoto(@Body() getPhotoByNameReqDto: GetPhotoByNameReqDto) {
+  //   return await this.placeService.getPlacePhoto(getPhotoByNameReqDto.text);
+  // }
 }

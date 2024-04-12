@@ -23,6 +23,9 @@ export class Place {
   @Column('decimal', { nullable: true })
   longitude: number; //경도
 
+  @Column('text', { nullable: true })
+  googlePlaceId: string; //googlePlaceId 필요
+
   //인스타 게스트 컬렉션
   @OneToMany(
     () => InstaGuestCollection,
@@ -45,10 +48,6 @@ export class Place {
   //장소-태그
   @OneToMany(() => PlaceTag, (placeTag) => placeTag.place)
   placeTags: PlaceTag[];
-
-  //장소-영업시간
-  // @OneToMany(() => PlaceOpenHour, (placeOpenHour) => placeOpenHour.place)
-  // placeOpenHours: PlaceOpenHour[];
 
   //장소-이미지
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)
