@@ -21,6 +21,7 @@ export class InstaGuestCollection {
   )
   instaGuestUser: InstaGuestUser;
 
+  //연결된 entity를 load할 필요없이 ID에 직접 액세스 할 수 있도록 해줌.
   @RelationId(
     (instaGuestCollection: InstaGuestCollection) =>
       instaGuestCollection.instaGuestUser,
