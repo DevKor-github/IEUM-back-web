@@ -24,7 +24,7 @@ export class Preference {
   @Column('text', { array: true })
   preferredCompanion: string[];
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 }

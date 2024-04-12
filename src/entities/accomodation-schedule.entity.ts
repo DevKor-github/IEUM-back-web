@@ -22,7 +22,9 @@ export class AccommodationSchedule {
   endDate: Date;
 
   //Trip Relation
-  @ManyToOne(() => Trip, (trip) => trip.accommodationSchedules)
+  @ManyToOne(() => Trip, (trip) => trip.accommodationSchedules, {
+    onDelete: 'CASCADE',
+  })
   trip: Trip;
 
   @RelationId(

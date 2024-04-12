@@ -19,10 +19,11 @@ export class InstaGuestCollection {
     () => InstaGuestUser,
     (instaGuestUser) => instaGuestUser.instaGuestCollections,
   )
-  user: User;
+  instaGuestUser: InstaGuestUser;
 
   @RelationId(
-    (instaGuestCollection: InstaGuestCollection) => instaGuestCollection.user,
+    (instaGuestCollection: InstaGuestCollection) =>
+      instaGuestCollection.instaGuestUser,
   )
   @Column()
   instaGuestUserId: string;

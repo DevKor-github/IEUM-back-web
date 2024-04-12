@@ -16,14 +16,16 @@ export class PlaceSchedule {
   @Column()
   visitingDate: Date;
 
-  @ManyToOne(() => Place, (place) => place.placeSchedules)
+  @ManyToOne(() => Place, (place) => place.placeSchedules, {
+    onDelete: 'CASCADE',
+  })
   place: Place;
 
   @RelationId((placeSchedule: PlaceSchedule) => placeSchedule.place)
   @Column()
   placeId: number;
 
-  @ManyToOne(() => Trip, (trip) => trip.placeSchedules)
+  @ManyToOne(() => Trip, (trip) => trip.placeSchedules, { onDelete: 'CASCADE' })
   trip: Trip;
 
   @RelationId((placeSchedule: PlaceSchedule) => placeSchedule.trip)
