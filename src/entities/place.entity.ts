@@ -4,7 +4,6 @@ import { PlaceSchedule } from './place-schedule.entity';
 import { CurationPlace } from './curation-place.entity';
 import { PlaceCategory } from './place-category.entity';
 import { PlaceTag } from './place-tag.entity';
-import { PlaceOpenHour } from './place-open-hour.entity';
 import { PlaceImage } from './place-image.entity';
 
 @Entity()
@@ -48,8 +47,8 @@ export class Place {
   placeTags: PlaceTag[];
 
   //장소-영업시간
-  @OneToMany(() => PlaceOpenHour, (placeOpenHour) => placeOpenHour.place)
-  placeOpenHours: PlaceOpenHour[];
+  // @OneToMany(() => PlaceOpenHour, (placeOpenHour) => placeOpenHour.place)
+  // placeOpenHours: PlaceOpenHour[];
 
   //장소-이미지
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)

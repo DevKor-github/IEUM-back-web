@@ -16,7 +16,7 @@ export class Preference {
   mbti: string;
 
   @Column('text', { array: true })
-  prefererredRegion: string[];
+  preferredRegion: string[];
 
   @Column('text', { array: true })
   preferredStyle: string[];
