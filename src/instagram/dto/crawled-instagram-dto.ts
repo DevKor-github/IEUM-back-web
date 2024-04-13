@@ -11,5 +11,5 @@ export class CrawledInstagramDto {
   instagramLink: string;
 
   @IsOptional()
-  content: string;
+  instagramDescription: string;
 }

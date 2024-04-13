@@ -15,6 +15,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      // whitelist: true, // DTO에 작성한 값만 수신
+      // forbidNonWhitelisted: true, // DTO에 작성된 필수값이 수신되지 않을 경우 에러
     }),
   );
   const config = new DocumentBuilder()

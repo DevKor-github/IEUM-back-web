@@ -1,7 +1,6 @@
-import { IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateInstaGuestCollectionDto {
-  @IsUUID()
   @IsNotEmpty()
   instaGuestUserId: string;
 

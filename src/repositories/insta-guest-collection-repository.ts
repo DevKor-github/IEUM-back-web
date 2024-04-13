@@ -21,7 +21,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     });
     if (instaGuestCollection) {
       //이미 똑같은 릴스를 저장한적이 있다면 새롭게 저장하지 않음.
-      return instaGuestCollection;
+      return null;
     }
     const newInstaGuestCollection = this.create(createInstaGuestCollectionDto);
     const saveNewInstaGuestCollection = await this.save(
