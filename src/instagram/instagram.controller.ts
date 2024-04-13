@@ -9,12 +9,14 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { CrawledInstagramDto } from './dto/crawled-instagram-dto';
+import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('instagram')
 @ApiTags('인스타그램 게스트 유저 서비스')
 export class InstagramController {
   constructor(private readonly instagramService: InstagramService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @ApiConsumes('application/json')
   @ApiResponse({ status: 200, description: 'OK' })
@@ -56,12 +58,12 @@ export class InstagramController {
     body: CrawledInstagramDto[],
   ) {
     try {
-      const createdInstaGuestCollection =
+      const createdMaskedInstaGuestCollection =
         await this.instagramService.crawlToDB(body);
       return {
         success: 'true',
         msg: 'instagram 정보와 place 정보가 성공적으로 DB에 적재되었습니다.',
-        createdInstaGuestCollection: createdInstaGuestCollection,
+        createdMaskedInstaGuestCollection: createdMaskedInstaGuestCollection,
       };
     } catch (error) {
       return {

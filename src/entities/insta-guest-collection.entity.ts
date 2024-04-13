@@ -8,6 +8,7 @@ import {
 import { User } from './user.entity';
 import { InstaGuestUser } from './insta-guest-user.entity';
 import { Place } from './place.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class InstaGuestCollection {
@@ -27,6 +28,7 @@ export class InstaGuestCollection {
       instaGuestCollection.instaGuestUser,
   )
   @Column()
+  @Exclude()
   instaGuestUserId: string;
 
   //Place에 Many To One
