@@ -5,6 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlaceModule } from './place/place.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CategoryModule } from './category/category.module';
+import { TagModule } from './tag/tag.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       namingStrategy: new SnakeNamingStrategy(),
     }),
     PlaceModule,
+    CategoryModule,
+    TagModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
