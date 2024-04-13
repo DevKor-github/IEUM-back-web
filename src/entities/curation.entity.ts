@@ -36,7 +36,7 @@ export class Curation {
 
   @RelationId((curation: Curation) => curation.user)
   @Column()
-  userId: string;
+  userId: number;
 
   @OneToMany(() => CurationPlace, (curationPlace) => curationPlace.curation)
   curationPlaces: CurationPlace[];

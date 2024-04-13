@@ -56,5 +56,5 @@ export class Trip {
 
   @RelationId((trip: Trip) => trip.user)
   @Column()
-  userId: string;
+  userId: number;
 }
