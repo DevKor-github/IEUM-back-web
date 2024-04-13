@@ -31,18 +31,7 @@ export class PlaceService {
   ) {}
 
   async getPlaceDetailById(placeId: number): Promise<PlaceDetailResDto> {
-    const place = await this.placeRepository
-      .createQueryBuilder('place')
-      .leftJoinAndSelect('place.openHours', 'openHours')
-      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
-      .leftJoinAndSelect('placeCategories.category', 'category')
-      .leftJoinAndSelect('place.placeTags', 'placeTags')
-      .leftJoinAndSelect('placeTags.tag', 'tag')
-      .leftJoinAndSelect('place.placeImages', 'placeImages')
-      .leftJoinAndSelect('placeImages.image', 'image')
-      .where('place.id = :placeId', { placeId })
-      .getOne();
-    console.log(place);
+    const place = await this.placeRepository.getPlaceDetailById(placeId);
     if (!place) throw new NotFoundException('Place not found');
     return new PlaceDetailResDto(place);
   }
@@ -89,11 +78,13 @@ export class PlaceService {
     };*/
   }
 
-  async createPlaceByGooglePlaceId(googlePlaceId: string): Promise<Place> {
+  async createPlaceByGooglePlaceId(
+    googlePlaceId: string,
+  ): Promise<PlaceDetailResDto> {
     const existedPlace = await this.placeRepository.findOne({
       where: { googlePlaceId: googlePlaceId },
     });
-    if (existedPlace) return existedPlace;
+    if (existedPlace) return this.getPlaceDetailById(existedPlace.id);
 
     const placeDetail = await axios.get(SEARCH_BY_ID_URL + googlePlaceId, {
       params: { languageCode: 'ko' },
@@ -105,15 +96,10 @@ export class PlaceService {
       }, // photos
     });
 
-    const createdPlace = await this.placeRepository.save({
-      name: placeDetail.data.displayName.text,
-      address: placeDetail.data.formattedAddress,
-      latitude: placeDetail.data.location.latitude,
-      longitude: placeDetail.data.location.longitude,
-      googlePlaceId: placeDetail.data.id,
-    });
+    const createdPlace =
+      await this.placeRepository.saveByGooglePlaceDetail(placeDetail);
 
-    const OpeningHours = await this.openHoursRepository.save({
+    const OpenHours = await this.openHoursRepository.save({
       opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
       place: createdPlace,
     });
@@ -128,13 +114,18 @@ export class PlaceService {
         categoryName: placeDetail.data.primaryTypeDisplayName.text,
       });
     }
+    console.log(existedCategory);
 
     await this.placeCategoryRepository.save({
       place: createdPlace,
       category: existedCategory,
     });
 
-    return createdPlace;
+    return PlaceDetailResDto.fromCreation(
+      createdPlace,
+      OpenHours,
+      existedCategory,
+    );
   }
 
   //Place 부가정보 relation 저장
