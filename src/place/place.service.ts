@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import axios from 'axios';
 import {
   PLACES_API_BASE_URL,
@@ -10,6 +10,14 @@ import { CategoryRepository } from 'src/repositories/category.repository';
 import { OpenHoursRepository } from 'src/repositories/open-hours.repository';
 import { PlaceCategoryRepository } from 'src/repositories/place-category.repository';
 import { PlaceRepository } from 'src/repositories/place.repository';
+import { PlaceDetailResDto } from './dtos/place-detail-res.dto';
+import {
+  CreatePlaceCategoryReqDto,
+  createPlaceImageReqDto,
+  createPlaceTagReqDto,
+} from './dtos/create-place-relation-req.dto';
+import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
+import { PlaceImageRepository } from 'src/repositories/place-image.repository';
 
 @Injectable()
 export class PlaceService {
@@ -18,9 +26,28 @@ export class PlaceService {
     private readonly openHoursRepository: OpenHoursRepository,
     private readonly categoryRepository: CategoryRepository,
     private readonly placeCategoryRepository: PlaceCategoryRepository,
+    private readonly placeTagRepository: PlaceTagRepository,
+    private readonly placeImageRepository: PlaceImageRepository,
   ) {}
 
-  async searchPlaceByText(text: string) {
+  async getPlaceDetailById(placeId: number): Promise<PlaceDetailResDto> {
+    const place = await this.placeRepository
+      .createQueryBuilder('place')
+      .leftJoinAndSelect('place.openHours', 'openHours')
+      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
+      .leftJoinAndSelect('placeCategories.category', 'category')
+      .leftJoinAndSelect('place.placeTags', 'placeTags')
+      .leftJoinAndSelect('placeTags.tag', 'tag')
+      .leftJoinAndSelect('place.placeImages', 'placeImages')
+      .leftJoinAndSelect('placeImages.image', 'image')
+      .where('place.id = :placeId', { placeId })
+      .getOne();
+    console.log(place);
+    if (!place) throw new NotFoundException('Place not found');
+    return new PlaceDetailResDto(place);
+  }
+
+  async searchGooglePlacesByText(text: string): Promise<any> {
     const place = await axios.post(
       SEARCH_BY_TEXT_URL,
       { textQuery: text, languageCode: 'ko' },
@@ -33,21 +60,24 @@ export class PlaceService {
         },
       },
     );
-    return this.getPlaceDetailById(place.data.places[0].id);
+    return place.data;
+    //return this.getPlaceDetailById(place.data.places[0].id);
   }
 
-  async getPlaceDetailById(id: string) {
-    const placeDetail = await axios.get(SEARCH_BY_ID_URL + id, {
+  async getPlaceDetailByGooglePlaceId(googlePlaceId: string): Promise<any> {
+    const placeDetail = await axios.get(SEARCH_BY_ID_URL + googlePlaceId, {
       params: { languageCode: 'ko' },
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
           'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName',
-      }, // photos
+      },
     });
-    console.log(placeDetail.data);
-    return {
+
+    return placeDetail.data;
+
+    /*return {
       장소명: placeDetail.data.displayName.text,
       주소: placeDetail.data.formattedAddress,
       위도: placeDetail.data.location.latitude,
@@ -56,16 +86,16 @@ export class PlaceService {
       영업시간: placeDetail.data.regularOpeningHours.weekdayDescriptions,
       카테고리: placeDetail.data.primaryTypeDisplayName.text,
       '기타 태그': placeDetail.data.types,
-    };
+    };*/
   }
 
-  async createPlaceById(placeId: string): Promise<Place> {
+  async createPlaceByGooglePlaceId(googlePlaceId: string): Promise<Place> {
     const existedPlace = await this.placeRepository.findOne({
-      where: { googlePlaceId: placeId },
+      where: { googlePlaceId: googlePlaceId },
     });
     if (existedPlace) return existedPlace;
 
-    const placeDetail = await axios.get(SEARCH_BY_ID_URL + placeId, {
+    const placeDetail = await axios.get(SEARCH_BY_ID_URL + googlePlaceId, {
       params: { languageCode: 'ko' },
       headers: {
         'Content-Type': 'application/json',
@@ -105,70 +135,41 @@ export class PlaceService {
     });
 
     return createdPlace;
-
-    // async getPlacePhoto(photoResource: string) {
-    //   console.log(PLACES_API_BASE_URL + photoResource + '/media');
-    //   const photo = await axios.get(
-    //     PLACES_API_BASE_URL + photoResource + '/media',
-    //     {
-    //       params: {
-    //         key: process.env.GOOGLE_API_KEY,
-    //         maxHeightPx: 1000,
-    //         maxWidthPx: 1000,
-    //         skipHttpRedirect: true,
-    //       },
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
-    //       },
-    //     },
-    //   );
-    //   return { photoUri: photo.data.photoUri };
-    // }
   }
 
-  /*
-POST로 인스타 게스트 서비스에 CrawledInstagramDto[]를 전달
+  //Place 부가정보 relation 저장
+  async createPlaceCategory(
+    createPlaceCategoryReqDto: CreatePlaceCategoryReqDto,
+  ) {
+    const existedRelation = await this.placeCategoryRepository.findOne({
+      where: {
+        placeId: createPlaceCategoryReqDto.placeId,
+        categoryId: createPlaceCategoryReqDto.categoryId,
+      },
+    });
+    if (existedRelation) return existedRelation;
+    return await this.placeCategoryRepository.save(createPlaceCategoryReqDto);
+  }
 
-인스타 게스트 서비스는 CrawledInstagramDto[]를 받아서, map을 통해 처리
+  async createPlaceTag(createPlaceTagReqDto: createPlaceTagReqDto) {
+    const existedRelation = await this.placeTagRepository.findOne({
+      where: {
+        placeId: createPlaceTagReqDto.placeId,
+        tagId: createPlaceTagReqDto.tagId,
+      },
+    });
+    if (existedRelation) return existedRelation;
+    return await this.placeTagRepository.save(createPlaceTagReqDto);
+  }
 
-map((crawledInstagramDto) => 
-const place = await this.placeService.createPlace(placeId)
-
-인스타그램 게스트 유저 검색 로직
-  -> 없으면 유저 새로 만들기
-  -> 아무튼 인스타그램 게스트 유저 uuid 리턴
-
-게스트 유저 uuid와 인스타그램 링크, 설명, placeId를 이용해 instaGuestCollection 생성
-*/
-
-  /*
-  placeId가 전달되면
-
-  먼저 해당 placeId로 place가 이미 존재하는지 체크 -> 있으면 그걸 바로 리턴
-
-  없으면 만들어야함
-  placeId로 구글 플레이스 세부 정보 리턴
-
-  const createdPlace = await this.placeRepository.save({
-    name : placeDetail.data.displayName.text
-    address : placeDetail.data.formattedAddress
-    latitude : placeDetail.data.location.latitude
-    longitude : placeDetail.data.location.longitude
-    googlePlaceId : placeDetail.data.id -> 추가할 사항
-  });
-
-  이후 
-  const OpeningHours = await this.openHoursRepository.save({
-    opening : placeDetail.data.regularOpeningHours.weekdayDescriptions
-    place : createdPlace
-  })
-
-  let existedCategory = await this.placeCategoryRepository.findOne({categoryName : placeDetail.data.primaryTypeDisplayName.text})
-  if(!existedCategory) {  existedCategory = await this.placeCategoryRepository.save({categoryName : placeDetail.data.primaryTypeDisplayName.text})
-  await this.placeCategoryRepository.save({
-    place : createdPlace,
-    category : existedCategory
-  })
-*/
+  async createPlaceImage(createPlaceImageReqDto: createPlaceImageReqDto) {
+    const existedRelation = await this.placeImageRepository.findOne({
+      where: {
+        placeId: createPlaceImageReqDto.placeId,
+        imageId: createPlaceImageReqDto.imageId,
+      },
+    });
+    if (existedRelation) return existedRelation;
+    return await this.placeImageRepository.save(createPlaceImageReqDto);
+  }
 }

@@ -1,10 +1,17 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { InstaGuestCollection } from './insta-guest-collection.entity';
 import { PlaceSchedule } from './place-schedule.entity';
 import { CurationPlace } from './curation-place.entity';
 import { PlaceCategory } from './place-category.entity';
 import { PlaceTag } from './place-tag.entity';
 import { PlaceImage } from './place-image.entity';
+import { OpenHours } from './open-hours.entity';
 
 @Entity()
 export class Place {
@@ -48,6 +55,10 @@ export class Place {
   //장소-태그
   @OneToMany(() => PlaceTag, (placeTag) => placeTag.place)
   placeTags: PlaceTag[];
+
+  //장소-영업시간
+  @OneToOne(() => OpenHours, (openHours) => openHours.place)
+  openHours: OpenHours;
 
   //장소-이미지
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)

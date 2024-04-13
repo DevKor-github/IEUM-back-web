@@ -5,7 +5,7 @@ export class SearchByTextReqDto {
   text: string;
 }
 
-export class GetPhotoByNameReqDto {
-  @ApiProperty()
-  text: string;
-}
+// export class GetPhotoByNameReqDto {
+//   @ApiProperty()
+//   text: string;
+// }

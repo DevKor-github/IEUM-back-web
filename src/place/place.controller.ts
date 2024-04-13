@@ -1,24 +1,71 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SearchByTextReqDto } from './dtos/search-by-text-req.dto';
 import {
-  GetPhotoByNameReqDto,
-  SearchByTextReqDto,
-} from './dtos/search-by-text-req.dto';
+  CreatePlaceCategoryReqDto,
+  createPlaceImageReqDto,
+  createPlaceTagReqDto,
+} from './dtos/create-place-relation-req.dto';
+import { CreatePlaceReqDto } from './dtos/create-place-req.dto';
 
+@ApiTags('place')
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
-  @ApiOperation({ summary: 'Search place by text' })
-  @Post()
-  async searchPlaceByText(@Body() searchByTextReqDto: SearchByTextReqDto) {
-    return await this.placeService.searchPlaceByText(searchByTextReqDto.text);
+  @ApiOperation({ summary: 'Get a Place by ID' })
+  @Get(':placeId')
+  async getPlaceDetailById(@Param('placeId') placeId: string) {
+    return await this.placeService.getPlaceDetailById(parseInt(placeId));
   }
 
-  // @ApiOperation({ summary: 'Get place photo' })
-  // @Post('photo')
-  // async getPlacePhoto(@Body() getPhotoByNameReqDto: GetPhotoByNameReqDto) {
-  //   return await this.placeService.getPlacePhoto(getPhotoByNameReqDto.text);
-  // }
+  @ApiOperation({ summary: 'Create place by googlePlaceId' })
+  @Post('')
+  async createPlaceByGooglePlaceId(
+    @Body() createPlaceReqDto: CreatePlaceReqDto,
+  ) {
+    return await this.placeService.createPlaceByGooglePlaceId(
+      createPlaceReqDto.googlePlaceId,
+    );
+  }
+
+  @ApiOperation({ summary: 'Search Google Place API by text' })
+  @Post('google')
+  async getGooglePlacesByText(@Body() searchByTextReqDto: SearchByTextReqDto) {
+    return await this.placeService.searchGooglePlacesByText(
+      searchByTextReqDto.text,
+    );
+  }
+
+  @ApiOperation({ summary: 'Get Google Place API detail by googlePlaceId' })
+  @Get('google/:googlePlaceId')
+  async getGooglePlaceDeatil(@Param('googlePlaceId') googlePlaceId: string) {
+    return await this.placeService.getPlaceDetailByGooglePlaceId(googlePlaceId);
+  }
+
+  // Place Relation
+  @ApiOperation({ summary: 'Create placeCategory' })
+  @Post('place-category')
+  async createPlaceCategory(
+    @Body() createPlaceCategoryReqDto: CreatePlaceCategoryReqDto,
+  ) {
+    return await this.placeService.createPlaceCategory(
+      createPlaceCategoryReqDto,
+    );
+  }
+
+  @ApiOperation({ summary: 'Create placeTag' })
+  @Post('place-tag')
+  async createPlaceTag(@Body() createPlaceTagReqDto: createPlaceTagReqDto) {
+    return await this.placeService.createPlaceTag(createPlaceTagReqDto);
+  }
+
+  @ApiOperation({ summary: 'Create placeImage' })
+  @Post('place-image')
+  async createPlaceImage(
+    @Body() createPlaceImageReqDto: createPlaceImageReqDto,
+  ) {
+    return await this.placeService.createPlaceImage(createPlaceImageReqDto);
+  }
 }
