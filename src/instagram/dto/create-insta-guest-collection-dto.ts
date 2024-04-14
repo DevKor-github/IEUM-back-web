@@ -2,7 +2,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateInstaGuestCollectionDto {
   @IsNotEmpty()
-  instaGuestUserId: string;
+  instaGuestUserId: number;
 
   @IsNotEmpty()
   placeId: number;

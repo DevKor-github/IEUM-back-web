@@ -6,7 +6,6 @@ import {
   ApiTags,
   ApiOperation,
   ApiCreatedResponse,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { CrawledInstagramDto } from './dto/crawled-instagram-dto';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
@@ -19,30 +18,9 @@ export class InstagramController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @ApiConsumes('application/json')
-  @ApiResponse({ status: 200, description: 'OK' })
-  @ApiResponse({ status: 400, description: 'validation error' })
+  //dto에서 @Apiproperty 를 사용하면 훨씬 깔끔하게 짤 수 있다.
   @ApiBody({
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          googlePlaceId: {
-            type: 'string',
-          },
-          instagramDescription: {
-            type: 'string',
-            description: 'optional',
-          },
-          instagramId: {
-            type: 'string',
-          },
-          instagramLink: {
-            type: 'string',
-          },
-        },
-      },
-    },
+    type: [CrawledInstagramDto],
   })
   @ApiOperation({
     summary: '인스타그램 게스트 정보 DB 적재',
@@ -57,20 +35,8 @@ export class InstagramController {
     @Body(new ParseArrayPipe({ items: CrawledInstagramDto }))
     body: CrawledInstagramDto[],
   ) {
-    try {
-      const createdMaskedInstaGuestCollection =
-        await this.instagramService.crawlToDB(body);
-      return {
-        success: 'true',
-        msg: 'instagram 정보와 place 정보가 성공적으로 DB에 적재되었습니다.',
-        createdMaskedInstaGuestCollection: createdMaskedInstaGuestCollection,
-      };
-    } catch (error) {
-      return {
-        success: 'false',
-        msg: '오류가 발생하여 DB에 적재하지 못했습니다.',
-        error: error.message,
-      };
-    }
+    //nest에 built-in global exception handler가 존재하기 때문에, service단에서 error가 발생하면, controller
+    //에서는 따로 try catch 하지 않아도 HttpException을 자동으로 받아서 처리해줌.
+    return await this.instagramService.crawlToDB(body);
   }
 }

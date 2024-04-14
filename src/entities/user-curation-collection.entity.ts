@@ -22,7 +22,7 @@ export class UserCurationCollection {
       userCurationCollection.user,
   )
   @Column()
-  userId: string;
+  userId: number;
 
   @ManyToOne(
     () => CurationPlace,

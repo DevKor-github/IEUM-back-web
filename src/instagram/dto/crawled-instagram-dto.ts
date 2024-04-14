@@ -1,15 +1,20 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CrawledInstagramDto {
-  @IsNotEmpty()
-  instagramId: string;
-
+  @ApiProperty()
   @IsNotEmpty()
   googlePlaceId: string;
 
-  @IsNotEmpty()
-  instagramLink: string;
-
+  @ApiProperty()
   @IsOptional()
   instagramDescription: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  instagramId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  instagramLink: string;
 }
