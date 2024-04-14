@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Generated,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -9,11 +10,16 @@ import {
 import { InstaGuestUser } from './insta-guest-user.entity';
 import { Trip } from './trip.entity';
 import { UserCurationCollection } from './user-curation-collection.entity';
+import { Preference } from './preference.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column('uuid')
+  @Generated('uuid')
+  uuid: string;
 
   @Column('varchar', { length: 20 })
   telephoneNumber: string;
@@ -31,7 +37,7 @@ export class User {
   sex: string;
 
   @Column({ nullable: true })
-  instaGuestUserId: string;
+  instaGuestUserId: number;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
@@ -41,4 +47,7 @@ export class User {
     (userCurationCollection) => userCurationCollection.user,
   )
   userCurationCollections: UserCurationCollection[];
+
+  @OneToOne(() => Preference, (preference) => preference.user)
+  preference: Preference;
 }

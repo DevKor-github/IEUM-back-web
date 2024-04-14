@@ -26,7 +26,7 @@ export class InstaGuestCollection {
       instaGuestCollection.instaGuestUser,
   )
   @Column()
-  instaGuestUserId: string;
+  instaGuestUserId: number;
 
   //Place에 Many To One
   @ManyToOne(() => Place, (place) => place.instaGuestCollections)
