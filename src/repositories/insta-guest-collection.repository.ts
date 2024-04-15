@@ -16,11 +16,11 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     const instaGuestCollection = await this.findOne({
       where: {
         instaGuestUserId: createInstaGuestCollectionDto.instaGuestUserId,
-        link: createInstaGuestCollectionDto.link,
+        placeId: createInstaGuestCollectionDto.placeId,
       },
     });
     if (instaGuestCollection) {
-      //이미 똑같은 릴스를 저장한적이 있다면 새롭게 저장하지 않음.
+      //이미 똑같은 장소를 저장한적이 있다면 새롭게 저장하지 않음.
       return null;
     }
     const newInstaGuestCollection = this.create(createInstaGuestCollectionDto);
