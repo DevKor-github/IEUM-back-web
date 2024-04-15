@@ -19,5 +19,6 @@ import { PlaceImageRepository } from 'src/repositories/place-image.repository';
     PlaceTagRepository,
     PlaceImageRepository,
   ],
+  exports: [PlaceService],
 })
 export class PlaceModule {}

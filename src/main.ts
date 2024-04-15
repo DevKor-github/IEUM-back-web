@@ -2,15 +2,21 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 declare const module: any;
 
 async function bootstrap() {
+  //여러 repository 아우르는 transaction 사용 위함.
+  initializeTransactionalContext();
+
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      // whitelist: true, // DTO에 작성한 값만 수신
+      // forbidNonWhitelisted: true, // DTO에 작성된 필수값이 수신되지 않을 경우 에러
     }),
   );
   const config = new DocumentBuilder()
