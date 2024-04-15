@@ -16,7 +16,7 @@ export class AddressComponentsRepository extends Repository<AddressComponents> {
     createdPlace: Place,
   ): Promise<AddressComponents> {
     const addressDetail = new AddressComponents();
-
+    addressComponents = addressComponents || [];
     addressComponents.forEach((component) => {
       const type = component.types[0]; // 가장 첫 번째 타입을 기준으로 사용합니다.
       switch (type) {
@@ -54,6 +54,6 @@ export class AddressComponentsRepository extends Repository<AddressComponents> {
     });
     addressDetail.place = createdPlace;
 
-    return await this.addressComponentsRepository.save(addressDetail);
+    return await this.save(addressDetail);
   }
 }

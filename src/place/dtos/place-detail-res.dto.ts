@@ -46,12 +46,12 @@ export class PlaceDetailResDto {
 
   static fromCreation(
     place: Place,
-    openHours: OpenHours,
-    category: Category,
+    openHours?: OpenHours,
+    category?: Category,
   ): PlaceDetailResDto {
     const placeDetailResDto = new PlaceDetailResDto(place);
-    placeDetailResDto.openHours = openHours.opening;
-    placeDetailResDto.categories = [category.categoryName];
+    placeDetailResDto.openHours = openHours?.opening || [];
+    placeDetailResDto.categories = category ? [category.categoryName] : [];
     placeDetailResDto.tags = [];
     placeDetailResDto.images = [];
 

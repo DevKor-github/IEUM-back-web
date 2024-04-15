@@ -20,6 +20,9 @@ import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
 import { PlaceImageRepository } from 'src/repositories/place-image.repository';
 import { AddressComponents } from 'src/entities/address-components.entity';
 import { AddressComponentsRepository } from 'src/repositories/address-components.repository';
+import { Transactional } from 'typeorm-transactional';
+import { Category } from 'src/entities/category.entity';
+import { OpenHours } from 'src/entities/open-hours.entity';
 
 @Injectable()
 export class PlaceService {
@@ -81,6 +84,7 @@ export class PlaceService {
     };*/
   }
 
+  @Transactional()
   async createPlaceByGooglePlaceId(
     googlePlaceId: string,
   ): Promise<PlaceDetailResDto> {
@@ -95,40 +99,45 @@ export class PlaceService {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName',
+          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours,displayName,primaryTypeDisplayName,addressComponents',
       }, // photos
     });
 
     const createdPlace =
       await this.placeRepository.saveByGooglePlaceDetail(placeDetail);
 
-    const OpenHours = await this.openHoursRepository.save({
-      opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
-      place: createdPlace,
-    });
-
-    const addressComponents =
+    let OpenHours: OpenHours;
+    if (placeDetail.data.regularOpeningHours) {
+      OpenHours = await this.openHoursRepository.save({
+        opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
+        place: createdPlace,
+      });
+    }
+    if (placeDetail.data.addressComponents) {
       await this.addressComponentsRepository.saveAddressComponents(
         placeDetail.data.addressComponents,
         createdPlace,
       );
+    }
 
-    let existedCategory = await this.categoryRepository.findOne({
-      where: {
-        categoryName: placeDetail.data.primaryTypeDisplayName.text,
-      },
-    });
-    if (!existedCategory) {
-      existedCategory = await this.categoryRepository.save({
-        categoryName: placeDetail.data.primaryTypeDisplayName.text,
+    let existedCategory: Category;
+    if (placeDetail.data.primaryTypeDisplayName) {
+      existedCategory = await this.categoryRepository.findOne({
+        where: {
+          categoryName: placeDetail.data.primaryTypeDisplayName.text,
+        },
+      });
+      if (!existedCategory) {
+        existedCategory = await this.categoryRepository.save({
+          categoryName: placeDetail.data.primaryTypeDisplayName.text,
+        });
+      }
+
+      await this.placeCategoryRepository.save({
+        place: createdPlace,
+        category: existedCategory,
       });
     }
-    console.log(existedCategory);
-
-    await this.placeCategoryRepository.save({
-      place: createdPlace,
-      category: existedCategory,
-    });
 
     return PlaceDetailResDto.fromCreation(
       createdPlace,
