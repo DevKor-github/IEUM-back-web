@@ -17,6 +17,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       where: {
         instaGuestUserId: createInstaGuestCollectionDto.instaGuestUserId,
         placeId: createInstaGuestCollectionDto.placeId,
+        link: createInstaGuestCollectionDto.link,
       },
     });
     if (instaGuestCollection) {
