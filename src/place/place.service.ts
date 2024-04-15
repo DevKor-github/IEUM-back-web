@@ -18,6 +18,11 @@ import {
 } from './dtos/create-place-relation-req.dto';
 import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
 import { PlaceImageRepository } from 'src/repositories/place-image.repository';
+import { AddressComponents } from 'src/entities/address-components.entity';
+import { AddressComponentsRepository } from 'src/repositories/address-components.repository';
+import { Transactional } from 'typeorm-transactional';
+import { Category } from 'src/entities/category.entity';
+import { OpenHours } from 'src/entities/open-hours.entity';
 
 @Injectable()
 export class PlaceService {
@@ -28,6 +33,7 @@ export class PlaceService {
     private readonly placeCategoryRepository: PlaceCategoryRepository,
     private readonly placeTagRepository: PlaceTagRepository,
     private readonly placeImageRepository: PlaceImageRepository,
+    private readonly addressComponentsRepository: AddressComponentsRepository,
   ) {}
 
   async getPlaceDetailById(placeId: number): Promise<PlaceDetailResDto> {
@@ -60,7 +66,7 @@ export class PlaceService {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName',
+          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName,addressComponents',
       },
     });
 
@@ -78,6 +84,7 @@ export class PlaceService {
     };*/
   }
 
+  @Transactional()
   async createPlaceByGooglePlaceId(
     googlePlaceId: string,
   ): Promise<PlaceDetailResDto> {
@@ -92,34 +99,45 @@ export class PlaceService {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName',
+          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours,displayName,primaryTypeDisplayName,addressComponents',
       }, // photos
     });
 
     const createdPlace =
       await this.placeRepository.saveByGooglePlaceDetail(placeDetail);
 
-    const OpenHours = await this.openHoursRepository.save({
-      opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
-      place: createdPlace,
-    });
-
-    let existedCategory = await this.categoryRepository.findOne({
-      where: {
-        categoryName: placeDetail.data.primaryTypeDisplayName.text,
-      },
-    });
-    if (!existedCategory) {
-      existedCategory = await this.categoryRepository.save({
-        categoryName: placeDetail.data.primaryTypeDisplayName.text,
+    let OpenHours: OpenHours;
+    if (placeDetail.data.regularOpeningHours) {
+      OpenHours = await this.openHoursRepository.save({
+        opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
+        place: createdPlace,
       });
     }
-    console.log(existedCategory);
+    if (placeDetail.data.addressComponents) {
+      await this.addressComponentsRepository.saveAddressComponents(
+        placeDetail.data.addressComponents,
+        createdPlace,
+      );
+    }
 
-    await this.placeCategoryRepository.save({
-      place: createdPlace,
-      category: existedCategory,
-    });
+    let existedCategory: Category;
+    if (placeDetail.data.primaryTypeDisplayName) {
+      existedCategory = await this.categoryRepository.findOne({
+        where: {
+          categoryName: placeDetail.data.primaryTypeDisplayName.text,
+        },
+      });
+      if (!existedCategory) {
+        existedCategory = await this.categoryRepository.save({
+          categoryName: placeDetail.data.primaryTypeDisplayName.text,
+        });
+      }
+
+      await this.placeCategoryRepository.save({
+        place: createdPlace,
+        category: existedCategory,
+      });
+    }
 
     return PlaceDetailResDto.fromCreation(
       createdPlace,

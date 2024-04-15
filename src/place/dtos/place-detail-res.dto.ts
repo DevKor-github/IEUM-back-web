@@ -17,6 +17,8 @@ export class PlaceDetailResDto {
 
   openHours: string[];
 
+  phoneNumber: string;
+
   categories: string[];
 
   tags: string[];
@@ -34,6 +36,7 @@ export class PlaceDetailResDto {
     this.longitude = place.longitude;
     this.googlePlaceId = place.googlePlaceId;
     this.openHours = place.openHours?.opening;
+    this.phoneNumber = place.phoneNumber;
     this.categories = place.placeCategories?.map(
       (placeCategory) => placeCategory.category.categoryName,
     );
@@ -43,12 +46,12 @@ export class PlaceDetailResDto {
 
   static fromCreation(
     place: Place,
-    openHours: OpenHours,
-    category: Category,
+    openHours?: OpenHours,
+    category?: Category,
   ): PlaceDetailResDto {
     const placeDetailResDto = new PlaceDetailResDto(place);
-    placeDetailResDto.openHours = openHours.opening;
-    placeDetailResDto.categories = [category.categoryName];
+    placeDetailResDto.openHours = openHours?.opening || [];
+    placeDetailResDto.categories = category ? [category.categoryName] : [];
     placeDetailResDto.tags = [];
     placeDetailResDto.images = [];
 

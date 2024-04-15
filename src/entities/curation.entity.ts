@@ -16,7 +16,7 @@ export class Curation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
+  @Column()
   content: string;
 
   @Column()

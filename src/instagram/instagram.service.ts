@@ -46,6 +46,7 @@ export class InstagramService {
         //에러를 호출자에게 전파 및 for loop 중단.
         throw new InternalServerErrorException(
           'crawled 데이터를 DB에 적재하는 과정에서 오류가 발생했습니다.',
+          error.stack,
         );
       }
     }

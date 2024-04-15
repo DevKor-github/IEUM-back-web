@@ -15,13 +15,13 @@ export class Preference {
   @Column('varchar', { length: 4 })
   mbti: string;
 
-  @Column('text', { array: true })
+  @Column('varchar', { array: true })
   preferredRegion: string[];
 
-  @Column('text', { array: true })
+  @Column('varchar', { array: true })
   preferredStyle: string[];
 
-  @Column('text', { array: true })
+  @Column('varchar', { array: true })
   preferredCompanion: string[];
 
   @OneToOne(() => User, { onDelete: 'CASCADE' })

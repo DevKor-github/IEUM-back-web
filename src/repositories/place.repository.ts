@@ -30,6 +30,7 @@ export class PlaceRepository extends Repository<Place> {
       latitude: placeDetail.data.location.latitude,
       longitude: placeDetail.data.location.longitude,
       googlePlaceId: placeDetail.data.id,
+      phoneNumber: placeDetail.data.nationalPhoneNumber,
     });
   }
 }

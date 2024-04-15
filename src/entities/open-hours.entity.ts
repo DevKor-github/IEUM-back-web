@@ -13,7 +13,7 @@ export class OpenHours {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text', { array: true })
+  @Column('varchar', { array: true })
   opening: string[];
 
   @OneToOne(() => Place)

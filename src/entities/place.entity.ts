@@ -12,16 +12,17 @@ import { PlaceCategory } from './place-category.entity';
 import { PlaceTag } from './place-tag.entity';
 import { PlaceImage } from './place-image.entity';
 import { OpenHours } from './open-hours.entity';
+import { AddressComponents } from './address-components.entity';
 
 @Entity()
 export class Place {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 50 })
+  @Column()
   name: string;
 
-  @Column('varchar', { length: 100, nullable: true })
+  @Column({ nullable: true })
   address: string;
 
   @Column('decimal', { nullable: true })
@@ -30,8 +31,11 @@ export class Place {
   @Column('decimal', { nullable: true })
   longitude: number; //경도
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   googlePlaceId: string; //googlePlaceId 필요
+
+  @Column({ nullable: true })
+  phoneNumber: string; //전화번호
 
   //인스타 게스트 컬렉션
   @OneToMany(
@@ -59,6 +63,13 @@ export class Place {
   //장소-영업시간
   @OneToOne(() => OpenHours, (openHours) => openHours.place)
   openHours: OpenHours;
+
+  //장소-주소 요소
+  @OneToOne(
+    () => AddressComponents,
+    (addressComponents) => addressComponents.place,
+  )
+  addressComponents: AddressComponents;
 
   //장소-이미지
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)

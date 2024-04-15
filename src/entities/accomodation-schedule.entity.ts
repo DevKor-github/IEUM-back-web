@@ -12,7 +12,7 @@ export class AccommodationSchedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 30 })
+  @Column()
   name: string;
 
   @Column()

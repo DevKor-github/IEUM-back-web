@@ -6,7 +6,7 @@ export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 15 })
+  @Column()
   tagName: string;
 
   @OneToMany(() => PlaceTag, (placeTag) => placeTag.tag)

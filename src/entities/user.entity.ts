@@ -21,13 +21,13 @@ export class User {
   @Generated('uuid')
   uuid: string;
 
-  @Column('varchar', { length: 20 })
-  telephoneNumber: string;
+  @Column()
+  phoneNumber: string;
 
-  @Column('varchar', { length: 60 })
+  @Column()
   password: string;
 
-  @Column('varchar', { length: 20 })
+  @Column()
   nickname: string;
 
   @Column()
