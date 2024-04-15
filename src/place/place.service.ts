@@ -18,6 +18,8 @@ import {
 } from './dtos/create-place-relation-req.dto';
 import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
 import { PlaceImageRepository } from 'src/repositories/place-image.repository';
+import { AddressComponents } from 'src/entities/address-components.entity';
+import { AddressComponentsRepository } from 'src/repositories/address-components.repository';
 
 @Injectable()
 export class PlaceService {
@@ -28,6 +30,7 @@ export class PlaceService {
     private readonly placeCategoryRepository: PlaceCategoryRepository,
     private readonly placeTagRepository: PlaceTagRepository,
     private readonly placeImageRepository: PlaceImageRepository,
+    private readonly addressComponentsRepository: AddressComponentsRepository,
   ) {}
 
   async getPlaceDetailById(placeId: number): Promise<PlaceDetailResDto> {
@@ -60,7 +63,7 @@ export class PlaceService {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName',
+          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours.weekdayDescriptions,displayName,primaryTypeDisplayName,addressComponents',
       },
     });
 
@@ -103,6 +106,12 @@ export class PlaceService {
       opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
       place: createdPlace,
     });
+
+    const addressComponents =
+      await this.addressComponentsRepository.saveAddressComponents(
+        placeDetail.data.addressComponents,
+        createdPlace,
+      );
 
     let existedCategory = await this.categoryRepository.findOne({
       where: {

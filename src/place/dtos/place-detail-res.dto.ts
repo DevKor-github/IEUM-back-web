@@ -17,6 +17,8 @@ export class PlaceDetailResDto {
 
   openHours: string[];
 
+  phoneNumber: string;
+
   categories: string[];
 
   tags: string[];
@@ -34,6 +36,7 @@ export class PlaceDetailResDto {
     this.longitude = place.longitude;
     this.googlePlaceId = place.googlePlaceId;
     this.openHours = place.openHours?.opening;
+    this.phoneNumber = place.phoneNumber;
     this.categories = place.placeCategories?.map(
       (placeCategory) => placeCategory.category.categoryName,
     );
