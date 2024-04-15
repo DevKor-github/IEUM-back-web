@@ -5,6 +5,7 @@ import {
   OneToOne,
   OneToMany,
   Generated,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { InstaGuestCollection } from './insta-guest-collection.entity';
@@ -14,7 +15,7 @@ export class InstaGuestUser {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 30 })
+  @Column()
   instaId: string;
 
   @Column('uuid')

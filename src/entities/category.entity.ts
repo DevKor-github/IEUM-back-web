@@ -6,7 +6,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 30 })
+  @Column()
   categoryName: string;
 
   @OneToMany(() => PlaceCategory, (placeCategory) => placeCategory.category)

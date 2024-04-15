@@ -7,7 +7,7 @@ export class Image {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
+  @Column()
   url: string;
 
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.image)

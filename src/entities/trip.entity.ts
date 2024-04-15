@@ -15,22 +15,22 @@ export class Trip {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 30, nullable: true })
+  @Column({ nullable: true })
   title: string;
 
-  @Column('int', { nullable: true })
+  @Column({ nullable: true })
   companionCnt: number;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   companionType: string;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column({ nullable: true })
   vehicle: string;
 
-  @Column('text', { array: true, nullable: true })
+  @Column('varchar', { array: true, nullable: true })
   styles: string[];
 
-  @Column('numeric', { precision: 15, scale: 4, nullable: true })
+  @Column({ nullable: true })
   budget: number;
 
   @Column()

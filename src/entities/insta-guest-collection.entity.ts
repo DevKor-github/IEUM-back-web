@@ -38,9 +38,9 @@ export class InstaGuestCollection {
   @Column()
   placeId: number;
 
-  @Column('varchar', { length: 200, nullable: true })
+  @Column({ nullable: true })
   content: string;
 
-  @Column('varchar', { nullable: true })
+  @Column({ nullable: true })
   link: string;
 }

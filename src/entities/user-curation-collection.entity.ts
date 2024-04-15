@@ -36,10 +36,4 @@ export class UserCurationCollection {
   )
   @Column()
   curationPlaceId: number;
-  // @ManyToOne(() => Curation, (curation) => curation.userCurationCollections)
-  // curation: Curation;
-
-  // @RelationId()
-  // @Column()
-  // curationId: number;
 }
