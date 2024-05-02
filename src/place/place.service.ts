@@ -56,7 +56,6 @@ export class PlaceService {
       },
     );
     return place.data;
-    //return this.getPlaceDetailById(place.data.places[0].id);
   }
 
   async getPlaceDetailByGooglePlaceId(googlePlaceId: string): Promise<any> {
@@ -71,17 +70,6 @@ export class PlaceService {
     });
 
     return placeDetail.data;
-
-    /*return {
-      장소명: placeDetail.data.displayName.text,
-      주소: placeDetail.data.formattedAddress,
-      위도: placeDetail.data.location.latitude,
-      경도: placeDetail.data.location.longitude,
-      전화번호: placeDetail.data.nationalPhoneNumber,
-      영업시간: placeDetail.data.regularOpeningHours.weekdayDescriptions,
-      카테고리: placeDetail.data.primaryTypeDisplayName.text,
-      '기타 태그': placeDetail.data.types,
-    };*/
   }
 
   @Transactional()
@@ -105,21 +93,21 @@ export class PlaceService {
         place: createdPlace,
       });
     }
+
     if (placeDetail.data.addressComponents) {
       await this.addressComponentsRepository.saveAddressComponents(
         placeDetail.data.addressComponents,
         createdPlace,
       );
     }
-
     const categories = await this.categoryRepository.saveCategoryArray(
       placeDetail.data.types,
     );
+
     await this.placeCategoryRepository.savePlaceCategoryArray(
       createdPlace,
       categories,
     );
-    //types를 넘겨받아서, category table에 저장하고, 각 category의 id array 가져오기
 
     return PlaceDetailResDto.fromCreation(createdPlace, OpenHours, categories);
   }
