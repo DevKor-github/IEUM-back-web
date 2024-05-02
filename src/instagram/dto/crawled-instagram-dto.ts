@@ -17,4 +17,8 @@ export class CrawledInstagramDto {
   @ApiProperty()
   @IsNotEmpty()
   instagramLink: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  embeddedTag: string;
 }
