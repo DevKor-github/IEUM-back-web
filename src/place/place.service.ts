@@ -93,15 +93,7 @@ export class PlaceService {
     });
     if (existedPlace) return this.getPlaceDetailById(existedPlace.id);
 
-    const placeDetail = await axios.get(SEARCH_BY_ID_URL + googlePlaceId, {
-      params: { languageCode: 'ko' },
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
-        'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours,displayName,primaryTypeDisplayName,addressComponents',
-      }, // photos
-    });
+    const placeDetail = await this.getPlaceDetailByGooglePlaceId(googlePlaceId);
 
     const createdPlace =
       await this.placeRepository.saveByGooglePlaceDetail(placeDetail);
@@ -120,30 +112,16 @@ export class PlaceService {
       );
     }
 
-    let existedCategory: Category;
-    if (placeDetail.data.primaryTypeDisplayName) {
-      existedCategory = await this.categoryRepository.findOne({
-        where: {
-          categoryName: placeDetail.data.primaryTypeDisplayName.text,
-        },
-      });
-      if (!existedCategory) {
-        existedCategory = await this.categoryRepository.save({
-          categoryName: placeDetail.data.primaryTypeDisplayName.text,
-        });
-      }
-
-      await this.placeCategoryRepository.save({
-        place: createdPlace,
-        category: existedCategory,
-      });
-    }
-
-    return PlaceDetailResDto.fromCreation(
-      createdPlace,
-      OpenHours,
-      existedCategory,
+    const categories = await this.categoryRepository.saveCategoryArray(
+      placeDetail.data.types,
     );
+    await this.placeCategoryRepository.savePlaceCategoryArray(
+      createdPlace,
+      categories,
+    );
+    //types를 넘겨받아서, category table에 저장하고, 각 category의 id array 가져오기
+
+    return PlaceDetailResDto.fromCreation(createdPlace, OpenHours, categories);
   }
 
   //Place 부가정보 relation 저장
