@@ -36,6 +36,9 @@ export class User {
   @Column('char', { length: 1 })
   sex: string;
 
+  @Column('varchar', { length: 4 })
+  mbti: string;
+
   @Column({ nullable: true })
   instaGuestUserId: number;
 
