@@ -4,8 +4,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTagReqDto } from './dtos/create-tag-req.dto';
 import { TagResDto } from './dtos/tag-res.dto';
 
-@ApiTags('tag')
-@Controller('tag')
+@ApiTags('tags')
+@Controller('tags')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
