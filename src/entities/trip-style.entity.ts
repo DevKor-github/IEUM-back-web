@@ -1,7 +1,15 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class TripStyle {
+  @PrimaryGeneratedColumn()
+  id: number;
   //동선 추천을 위한 여행 스타일
   @Column() //숙소 위치
   accomodotionLocation: string;

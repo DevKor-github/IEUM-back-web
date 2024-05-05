@@ -25,12 +25,12 @@ export class PlaceRepository extends Repository<Place> {
 
   async saveByGooglePlaceDetail(placeDetail: any): Promise<Place> {
     return await this.save({
-      name: placeDetail.data.displayName.text,
-      address: placeDetail.data.formattedAddress,
-      latitude: placeDetail.data.location.latitude,
-      longitude: placeDetail.data.location.longitude,
-      googlePlaceId: placeDetail.data.id,
-      phoneNumber: placeDetail.data.nationalPhoneNumber,
+      name: placeDetail.displayName.text,
+      address: placeDetail.formattedAddress,
+      latitude: placeDetail.location.latitude,
+      longitude: placeDetail.location.longitude,
+      googlePlaceId: placeDetail.id,
+      phoneNumber: placeDetail.nationalPhoneNumber,
     });
   }
 }
