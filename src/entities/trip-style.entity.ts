@@ -5,6 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Trip } from './trip.entity';
 
 @Entity()
 export class TripStyle {
@@ -32,7 +33,7 @@ export class TripStyle {
   @Column()
   destinationStyle3: number; //휴양~액티비티
 
-  @OneToOne(() => TripStyle, { onDelete: 'CASCADE' })
+  @OneToOne(() => Trip, (trip) => trip.tripStyle, { onDelete: 'CASCADE' })
   @JoinColumn()
-  trip: TripStyle;
+  trip: Trip;
 }

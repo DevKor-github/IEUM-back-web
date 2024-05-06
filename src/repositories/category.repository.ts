@@ -13,15 +13,17 @@ export class CategoryRepository extends Repository<Category> {
   async saveCategoryArray(types: string[]): Promise<Category[]> {
     const categories: Category[] = [];
 
-    types.map(async (type) => {
-      let category = await this.findOne({ where: { categoryName: type } });
-      if (!category) {
-        category = new Category();
-        category.categoryName = type;
-        category = await this.save({ categoryName: type });
-      }
-      categories.push(category);
-    });
+    await Promise.all(
+      types.map(async (type) => {
+        let category = await this.findOne({ where: { categoryName: type } });
+        if (!category) {
+          category = new Category();
+          category.categoryName = type;
+          category = await this.save({ categoryName: type });
+        }
+        categories.push(category);
+      }),
+    );
     return categories;
   }
 }
