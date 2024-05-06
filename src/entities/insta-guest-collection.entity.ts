@@ -43,4 +43,7 @@ export class InstaGuestCollection {
 
   @Column({ nullable: true })
   link: string;
+
+  @Column({ nullable: true })
+  embeddedTag: string;
 }

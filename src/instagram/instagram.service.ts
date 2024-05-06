@@ -37,6 +37,7 @@ export class InstagramService {
             placeId: placeInfo.id,
             link: dto.instagramLink,
             content: dto.instagramDescription,
+            embeddedTag: dto.embeddedTag,
           });
         if (instaGuestCollection) {
           //null값이 아니다 -> 새롭게 저장됐다.
@@ -52,5 +53,9 @@ export class InstagramService {
     }
 
     return createdInstaGuestCollection;
+  }
+
+  htmlTest(htmlBody: string): string {
+    return htmlBody;
   }
 }

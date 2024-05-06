@@ -12,7 +12,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
   async createInstaGuestCollection(
     createInstaGuestCollectionDto: CreateInstaGuestCollectionDto,
   ): Promise<InstaGuestCollection> {
-    //똑같은 인스타 아이디로 똑같은 릴스에 대한 서비스 요청 처리-> 중복 저장 x
+    //한 아이디로 저장한 장소-게시글 쌍에 대한 중복 체크
     const instaGuestCollection = await this.findOne({
       where: {
         instaGuestUserId: createInstaGuestCollectionDto.instaGuestUserId,
@@ -21,7 +21,6 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       },
     });
     if (instaGuestCollection) {
-      //이미 똑같은 장소를 저장한적이 있다면 새롭게 저장하지 않음.
       return null;
     }
     const newInstaGuestCollection = this.create(createInstaGuestCollectionDto);

@@ -10,6 +10,9 @@ export class CreateInstaGuestCollectionDto {
   @IsNotEmpty()
   link: string;
 
+  @IsNotEmpty()
+  embeddedTag: string;
+
   @IsOptional()
   content: string;
 }

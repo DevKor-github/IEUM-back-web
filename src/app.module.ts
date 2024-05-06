@@ -24,7 +24,7 @@ import { ImageModule } from './image/image.module';
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        autoLoadEntities: true,
+        // autoLoadEntities: true,
         synchronize: true,
         logging: true,
         namingStrategy: new SnakeNamingStrategy(),

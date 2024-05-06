@@ -56,7 +56,6 @@ export class PlaceService {
       },
     );
     return place.data;
-    //return this.getPlaceDetailById(place.data.places[0].id);
   }
 
   async getPlaceDetailByGooglePlaceId(googlePlaceId: string): Promise<any> {
@@ -70,18 +69,7 @@ export class PlaceService {
       },
     });
 
-    return placeDetail.data;
-
-    /*return {
-      장소명: placeDetail.data.displayName.text,
-      주소: placeDetail.data.formattedAddress,
-      위도: placeDetail.data.location.latitude,
-      경도: placeDetail.data.location.longitude,
-      전화번호: placeDetail.data.nationalPhoneNumber,
-      영업시간: placeDetail.data.regularOpeningHours.weekdayDescriptions,
-      카테고리: placeDetail.data.primaryTypeDisplayName.text,
-      '기타 태그': placeDetail.data.types,
-    };*/
+    return placeDetail.data; //axios의 반환값에서 data만을 반환시켜야 한다.
   }
 
   @Transactional()
@@ -92,58 +80,34 @@ export class PlaceService {
       where: { googlePlaceId: googlePlaceId },
     });
     if (existedPlace) return this.getPlaceDetailById(existedPlace.id);
-
-    const placeDetail = await axios.get(SEARCH_BY_ID_URL + googlePlaceId, {
-      params: { languageCode: 'ko' },
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
-        'X-Goog-FieldMask':
-          'id,name,types,displayName,nationalPhoneNumber,formattedAddress,location,regularOpeningHours,displayName,primaryTypeDisplayName,addressComponents',
-      }, // photos
-    });
-
+    const placeDetail = await this.getPlaceDetailByGooglePlaceId(googlePlaceId);
     const createdPlace =
       await this.placeRepository.saveByGooglePlaceDetail(placeDetail);
 
     let OpenHours: OpenHours;
-    if (placeDetail.data.regularOpeningHours) {
+    if (placeDetail.regularOpeningHours) {
       OpenHours = await this.openHoursRepository.save({
-        opening: placeDetail.data.regularOpeningHours.weekdayDescriptions,
+        opening: placeDetail.regularOpeningHours.weekdayDescriptions,
         place: createdPlace,
       });
     }
-    if (placeDetail.data.addressComponents) {
+
+    if (placeDetail.addressComponents) {
       await this.addressComponentsRepository.saveAddressComponents(
-        placeDetail.data.addressComponents,
+        placeDetail.addressComponents,
         createdPlace,
       );
     }
-
-    let existedCategory: Category;
-    if (placeDetail.data.primaryTypeDisplayName) {
-      existedCategory = await this.categoryRepository.findOne({
-        where: {
-          categoryName: placeDetail.data.primaryTypeDisplayName.text,
-        },
-      });
-      if (!existedCategory) {
-        existedCategory = await this.categoryRepository.save({
-          categoryName: placeDetail.data.primaryTypeDisplayName.text,
-        });
-      }
-
-      await this.placeCategoryRepository.save({
-        place: createdPlace,
-        category: existedCategory,
-      });
-    }
-
-    return PlaceDetailResDto.fromCreation(
-      createdPlace,
-      OpenHours,
-      existedCategory,
+    const categories = await this.categoryRepository.saveCategoryArray(
+      placeDetail.types,
     );
+
+    await this.placeCategoryRepository.savePlaceCategoryArray(
+      createdPlace,
+      categories,
+    );
+
+    return PlaceDetailResDto.fromCreation(createdPlace, OpenHours, categories);
   }
 
   //Place 부가정보 relation 저장

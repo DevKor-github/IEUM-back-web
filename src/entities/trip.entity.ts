@@ -3,12 +3,14 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { PlaceSchedule } from './place-schedule.entity';
 import { AccommodationSchedule } from './accomodation-schedule.entity';
 import { User } from './user.entity';
+import { TripStyle } from './trip-style.entity';
 
 @Entity()
 export class Trip {
@@ -21,17 +23,17 @@ export class Trip {
   @Column({ nullable: true })
   companionCnt: number;
 
+  @Column('varchar', { array: true })
+  companionType: string[];
+
   @Column({ nullable: true })
-  companionType: string;
+  destination: string; //제주, 서울, 강릉, 양양.. 등과 같은
 
   @Column({ nullable: true })
   vehicle: string;
 
-  @Column('varchar', { array: true, nullable: true })
-  styles: string[];
-
-  @Column({ nullable: true })
-  budget: number;
+  @OneToOne(() => TripStyle, (tripStyle) => tripStyle.trip)
+  tripStyle: TripStyle;
 
   @Column()
   startDate: Date;
