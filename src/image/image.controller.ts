@@ -4,8 +4,8 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateImageReqDto } from './dtos/create-image-req.dto';
 import { ImageResDto } from './dtos/image-res.dto';
 
-@ApiTags('image')
-@Controller('image')
+@ApiTags('images')
+@Controller('images')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 

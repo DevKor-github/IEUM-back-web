@@ -5,18 +5,15 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { Trip } from './trip.entity';
 
 @Entity()
-export class Preference {
+export class TripStyle {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column('varchar', { array: true })
-  preferredRegion: string[];
-
-  @Column('varchar', { array: true })
-  preferredCompanion: string[];
+  //동선 추천을 위한 여행 스타일
+  @Column() //숙소 위치
+  accomodotionLocation: string;
 
   @Column()
   budgetStyle: number; //저렴한~비싼
@@ -36,7 +33,7 @@ export class Preference {
   @Column()
   destinationStyle3: number; //휴양~액티비티
 
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @OneToOne(() => Trip, (trip) => trip.tripStyle, { onDelete: 'CASCADE' })
   @JoinColumn()
-  user: User;
+  trip: Trip;
 }

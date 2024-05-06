@@ -9,8 +9,8 @@ import {
 } from './dtos/create-place-relation-req.dto';
 import { CreatePlaceReqDto } from './dtos/create-place-req.dto';
 
-@ApiTags('place')
-@Controller('place')
+@ApiTags('places')
+@Controller('places')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
@@ -46,7 +46,7 @@ export class PlaceController {
 
   // Place Relation
   @ApiOperation({ summary: 'Create placeCategory' })
-  @Post('place-category')
+  @Post('place-categories')
   async createPlaceCategory(
     @Body() createPlaceCategoryReqDto: CreatePlaceCategoryReqDto,
   ) {
@@ -56,13 +56,13 @@ export class PlaceController {
   }
 
   @ApiOperation({ summary: 'Create placeTag' })
-  @Post('place-tag')
+  @Post('place-tags')
   async createPlaceTag(@Body() createPlaceTagReqDto: createPlaceTagReqDto) {
     return await this.placeService.createPlaceTag(createPlaceTagReqDto);
   }
 
   @ApiOperation({ summary: 'Create placeImage' })
-  @Post('place-image')
+  @Post('place-images')
   async createPlaceImage(
     @Body() createPlaceImageReqDto: createPlaceImageReqDto,
   ) {

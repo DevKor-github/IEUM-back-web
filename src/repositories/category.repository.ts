@@ -9,4 +9,21 @@ export class CategoryRepository extends Repository<Category> {
   constructor(private readonly dataSource: DataSource) {
     super(Category, dataSource.createEntityManager());
   }
+
+  async saveCategoryArray(types: string[]): Promise<Category[]> {
+    const categories: Category[] = [];
+
+    await Promise.all(
+      types.map(async (type) => {
+        let category = await this.findOne({ where: { categoryName: type } });
+        if (!category) {
+          category = new Category();
+          category.categoryName = type;
+          category = await this.save({ categoryName: type });
+        }
+        categories.push(category);
+      }),
+    );
+    return categories;
+  }
 }

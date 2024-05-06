@@ -4,8 +4,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryRes } from './dtos/category-res.dto';
 import { CreateCategoryReqDto } from './dtos/create-category-req.dto';
 
-@ApiTags('category')
-@Controller('category')
+@ApiTags('categories')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

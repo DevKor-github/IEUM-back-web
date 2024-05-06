@@ -39,4 +39,19 @@ export class InstagramController {
     //에서는 따로 try catch 하지 않아도 HttpException을 자동으로 받아서 처리해줌.
     return await this.instagramService.crawlToDB(body);
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        html: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @Post('html-test')
+  async htmlTest(@Body('html') htmlBody: string) {
+    return await this.instagramService.htmlTest(htmlBody);
+  }
 }
