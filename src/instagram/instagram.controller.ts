@@ -9,27 +9,15 @@ import {
 } from '@nestjs/swagger';
 import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { CrawlToDBDecorator } from 'src/common/decorators/crawl-to-db.decorator';
 
 @Controller('instagram')
 @ApiTags('인스타그램 게스트 유저 서비스')
 export class InstagramController {
   constructor(private readonly instagramService: InstagramService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
+  @CrawlToDBDecorator()
   @Post()
-  @ApiConsumes('application/json')
-  //dto에서 @Apiproperty 를 사용하면 훨씬 깔끔하게 짤 수 있다.
-  @ApiBody({
-    type: [CrawledInstagramDto],
-  })
-  @ApiOperation({
-    summary: '인스타그램 게스트 정보 DB 적재',
-    description:
-      '1. insta-guest-user 생성 \n2. insta-guest-collection 생성 \n3. 구글 API이용 place 데이터 불러오기 및 저장.',
-  })
-  @ApiCreatedResponse({
-    description: '생성된 insta-guest-collection record',
-  })
   async crawlToDB(
     //dto 유효성 검사 array에 필수.: ParseArrayPipe
     @Body(new ParseArrayPipe({ items: CrawledInstagramDto }))
