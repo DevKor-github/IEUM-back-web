@@ -7,7 +7,7 @@ import {
   ApiOperation,
   ApiCreatedResponse,
 } from '@nestjs/swagger';
-import { CrawledInstagramDto } from './dto/crawled-instagram-dto';
+import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('instagram')

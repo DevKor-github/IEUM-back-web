@@ -1,6 +1,6 @@
 import { InstaGuestUser } from '../entities/insta-guest-user.entity';
 import { Injectable } from '@nestjs/common';
-import { CreateInstaGuestUserDto } from 'src/instagram/dto/create-insta-guest-user-dto';
+import { CreateInstaGuestUserDto } from 'src/instagram/dtos/create-insta-guest-user-dto';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()

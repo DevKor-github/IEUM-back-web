@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
-import { CreateInstaGuestCollectionDto } from 'src/instagram/dto/create-insta-guest-collection-dto';
+import { CreateInstaGuestCollectionDto } from 'src/instagram/dtos/create-insta-guest-collection-dto';
 
 @Injectable()
 export class InstaGuestCollectionRepository extends Repository<InstaGuestCollection> {
