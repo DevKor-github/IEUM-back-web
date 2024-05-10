@@ -1,4 +1,11 @@
-import { Controller, Post, Body, ParseArrayPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ParseArrayPipe,
+  Get,
+  Param,
+} from '@nestjs/common';
 import { InstagramService } from './instagram.service';
 import {
   ApiConsumes,
@@ -19,12 +26,9 @@ export class InstagramController {
   @CrawlToDBDecorator()
   @Post()
   async crawlToDB(
-    //dto 유효성 검사 array에 필수.: ParseArrayPipe
-    @Body(new ParseArrayPipe({ items: CrawledInstagramDto }))
+    @Body(new ParseArrayPipe({ items: CrawledInstagramDto })) //for DTO array validation
     body: CrawledInstagramDto[],
   ) {
-    //nest에 built-in global exception handler가 존재하기 때문에, service단에서 error가 발생하면, controller
-    //에서는 따로 try catch 하지 않아도 HttpException을 자동으로 받아서 처리해줌.
     return await this.instagramService.crawlToDB(body);
   }
 
@@ -42,4 +46,19 @@ export class InstagramController {
   async htmlTest(@Body('html') htmlBody: string) {
     return await this.instagramService.htmlTest(htmlBody);
   }
+
+  @Get('markers/:instaId')
+  async getMarkers(@Param('instaId') instaId: string) {
+    return await this.instagramService.getMarkers(instaId);
+  }
+
+  // @Get('collections/:instaGuestId')
+  // async getCollections() {
+  //   return await this.instagramService.getCollections();
+  // }
+
+  // @Get('collections/:instaGuestId/:instaGuestCollectionId')
+  // async getCollectionDetail() {
+  //   return await this.instagramService.getCollectionDetail();
+  // }
 }

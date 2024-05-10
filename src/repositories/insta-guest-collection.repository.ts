@@ -29,4 +29,51 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     );
     return saveNewInstaGuestCollection;
   }
+
+  async getMarkers(instaGuestUserId: number) {
+    return await this.createQueryBuilder('instaGuestCollection')
+      .leftJoinAndSelect('instaGuestCollection.place', 'place')
+      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
+      .leftJoinAndSelect('placeCategories.category', 'category')
+      .select([
+        'instaGuestCollection.id AS InstaGuestCollectionId',
+        'instaGuestCollection.placeId AS placeId',
+        'place.name AS placeName',
+        'place.latitude AS latitude',
+        'place.longitude AS longitude',
+        'JSON_AGG(DISTINCT category.categoryName) AS categories',
+      ])
+      .where('instaGuestCollection.instaGuestUserId = :instaGuestUserId', {
+        instaGuestUserId,
+      })
+      .groupBy('instaGuestCollection.id')
+      .addGroupBy('place.id')
+      .getRawMany();
+  }
 }
+
+// export class InstaCollectionMarkerDto {
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   instaGuestCollectionId: number;
+
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   placeId: number;
+
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   placeName: string;
+
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   latitude: number;
+
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   longitude: number;
+
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   category: string;
+// }

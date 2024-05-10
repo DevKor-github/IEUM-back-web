@@ -8,14 +8,10 @@ import { PlaceService } from 'src/place/place.service';
 @Injectable()
 export class InstagramService {
   constructor(
-    // @InjectRepository(InstaGuestUserRepository)
     private readonly placeService: PlaceService,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
-    // @InjectRepository(InstaGuestCollectionRepository)
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
   ) {}
-
-  //각 function call 내부에서의 db수정이 한 번 밖에 일어나지 않으므로 (연쇄적이지 않음) transaction으로 처리할 필요가 없어보임.
 
   async crawlToDB(
     crawledInstagramDto: CrawledInstagramDto[],
@@ -58,4 +54,25 @@ export class InstagramService {
   htmlTest(htmlBody: string): string {
     return htmlBody;
   }
+
+  async getMarkers(instaId: string) {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    const markersList = await this.instaGuestCollectionRepository.getMarkers(
+      instaGuestUser.id,
+    );
+    return {
+      length: markersList.length,
+      markers: markersList,
+    };
+  }
+
+  // async getCollections() {
+  //   return await this.instaGuestCollectionRepository.getCollections();
+  // }
+
+  // async getCollectionDetail() {
+  //   return await this.instaGuestCollectionRepository.getCollectionDetail();
+  // }
 }
