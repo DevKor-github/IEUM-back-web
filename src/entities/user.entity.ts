@@ -11,6 +11,7 @@ import { InstaGuestUser } from './insta-guest-user.entity';
 import { Trip } from './trip.entity';
 import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
+import { CollectionsFolder } from './collections-folder.entity';
 
 @Entity()
 export class User {
@@ -53,4 +54,10 @@ export class User {
 
   @OneToOne(() => Preference, (preference) => preference.user)
   preference: Preference;
+
+  @OneToMany(
+    () => CollectionsFolder,
+    (collectionsFolder) => collectionsFolder.user,
+  )
+  collectionsFolders: CollectionsFolder[];
 }

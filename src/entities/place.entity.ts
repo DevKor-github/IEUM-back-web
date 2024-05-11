@@ -37,6 +37,9 @@ export class Place {
   @Column({ nullable: true })
   phoneNumber: string; //전화번호
 
+  @Column({ nullable: true })
+  primaryCategory: string; //주요 카테고리
+
   //인스타 게스트 컬렉션
   @OneToMany(
     () => InstaGuestCollection,
