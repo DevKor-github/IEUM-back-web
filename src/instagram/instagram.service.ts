@@ -4,6 +4,7 @@ import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-col
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
 import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { PlaceService } from 'src/place/place.service';
+import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant';
 
 @Injectable()
 export class InstagramService {
@@ -68,11 +69,37 @@ export class InstagramService {
     };
   }
 
-  // async getCollections() {
-  //   return await this.instaGuestCollectionRepository.getCollections();
-  // }
+  async getCollections(instaId: string, region?: string, cursorId?: number) {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    const collectionsList =
+      await this.instaGuestCollectionRepository.getCollections(
+        instaGuestUser.id,
+        region,
+        cursorId,
+      );
+    const hasNextPage = collectionsList.length == INSTA_COLLECTIONS_TAKE + 1;
+    const nextCursorId = hasNextPage
+      ? collectionsList[INSTA_COLLECTIONS_TAKE - 1].InstaGuestCollectionId
+      : null;
 
-  // async getCollectionDetail() {
-  //   return await this.instaGuestCollectionRepository.getCollectionDetail();
-  // }
+    return {
+      hasNextPage: hasNextPage,
+      nextCursorId: nextCursorId,
+      collections: hasNextPage
+        ? collectionsList.slice(0, INSTA_COLLECTIONS_TAKE)
+        : collectionsList,
+    };
+  }
+
+  async getCollectionDetail(instaId: string, instaGuestCollectionId: number) {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    return await this.instaGuestCollectionRepository.getCollectionDetail(
+      instaGuestUser.id,
+      instaGuestCollectionId,
+    );
+  }
 }

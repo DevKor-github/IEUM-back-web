@@ -52,13 +52,19 @@ export class InstagramController {
     return await this.instagramService.getMarkers(instaId);
   }
 
-  // @Get('collections/:instaGuestId')
-  // async getCollections() {
-  //   return await this.instagramService.getCollections();
-  // }
+  @Get('collections/:instaId')
+  async getCollections(@Param('instaId') instaId: string) {
+    return await this.instagramService.getCollections(instaId);
+  }
 
-  // @Get('collections/:instaGuestId/:instaGuestCollectionId')
-  // async getCollectionDetail() {
-  //   return await this.instagramService.getCollectionDetail();
-  // }
+  @Get('collections/:instaGuestId/:instaGuestCollectionId')
+  async getCollectionDetail(
+    @Param('instaId') instaId: string,
+    @Param('instaGuestCollectionId') instaGuestCollectionId: number,
+  ) {
+    return await this.instagramService.getCollectionDetail(
+      instaId,
+      instaGuestCollectionId,
+    );
+  }
 }
