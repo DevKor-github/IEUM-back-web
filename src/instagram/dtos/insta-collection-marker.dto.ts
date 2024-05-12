@@ -27,4 +27,38 @@ export class InstaCollectionMarkerDto {
   @ApiProperty()
   @IsNotEmpty()
   category: string;
+
+  @ApiProperty()
+  representativeCategory: string;
+
+  constructor(
+    instaGuestCollectionId: number,
+    placeId: number,
+    placeName: string,
+    latitude: number,
+    longitude: number,
+    category: string,
+    representativeCategory: string,
+  ) {
+    this.instaGuestCollectionId = instaGuestCollectionId;
+    this.placeId = placeId;
+    this.placeName = placeName;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.category = category;
+    this.representativeCategory = representativeCategory;
+  }
+}
+
+export class InstaCollectionMarkersListDto {
+  @ApiProperty()
+  total: number;
+
+  @ApiProperty({ type: [InstaCollectionMarkerDto] })
+  markers: InstaCollectionMarkerDto[];
+
+  constructor(total: number, markers: InstaCollectionMarkerDto[]) {
+    this.total = total;
+    this.markers = markers;
+  }
 }

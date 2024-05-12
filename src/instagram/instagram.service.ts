@@ -5,6 +5,11 @@ import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity
 import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { PlaceService } from 'src/place/place.service';
 import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant';
+import {
+  InstaCollectionMarkerDto,
+  InstaCollectionMarkersListDto,
+} from './dtos/insta-collection-marker.dto';
+import { CATEGORY_MAPPING } from 'src/common/constants/category-mapping.constant';
 
 @Injectable()
 export class InstagramService {
@@ -56,17 +61,26 @@ export class InstagramService {
     return htmlBody;
   }
 
-  async getMarkers(instaId: string) {
+  async getMarkers(instaId: string): Promise<InstaCollectionMarkersListDto> {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
-    const markersList = await this.instaGuestCollectionRepository.getMarkers(
+    const resultArray = await this.instaGuestCollectionRepository.getMarkers(
       instaGuestUser.id,
     );
-    return {
-      length: markersList.length,
-      markers: markersList,
-    };
+    const markersList = resultArray.map((result) => {
+      return new InstaCollectionMarkerDto(
+        result.insta_guest_collection_id,
+        result.place_id,
+        result.place_name,
+        parseFloat(result.latitude),
+        parseFloat(result.longitude),
+        result.primary_category,
+        this.determineRepresentativeCategory(result.primary_category),
+      );
+    });
+
+    return new InstaCollectionMarkersListDto(markersList.length, markersList);
   }
 
   async getCollections(instaId: string, region?: string, cursorId?: number) {
@@ -81,7 +95,7 @@ export class InstagramService {
       );
     const hasNextPage = collectionsList.length == INSTA_COLLECTIONS_TAKE + 1;
     const nextCursorId = hasNextPage
-      ? collectionsList[INSTA_COLLECTIONS_TAKE - 1].InstaGuestCollectionId
+      ? collectionsList[INSTA_COLLECTIONS_TAKE - 1].instaGuestCollectionId
       : null;
 
     return {
@@ -101,5 +115,16 @@ export class InstagramService {
       instaGuestUser.id,
       instaGuestCollectionId,
     );
+  }
+
+  determineRepresentativeCategory(category: string): string {
+    for (const [newCategory, oldCategories] of Object.entries(
+      CATEGORY_MAPPING,
+    )) {
+      if (oldCategories.includes(category)) {
+        return newCategory;
+      }
+    }
+    return 'Others';
   }
 }

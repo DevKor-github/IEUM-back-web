@@ -31,18 +31,16 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     return saveNewInstaGuestCollection;
   }
 
-  async getMarkers(instaGuestUserId: number) {
+  async getMarkers(instaGuestUserId: number): Promise<any> {
     return await this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
-      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
-      .leftJoinAndSelect('placeCategories.category', 'category')
       .select([
-        'instaGuestCollection.id AS InstaGuestCollectionId',
-        'instaGuestCollection.placeId AS placeId',
-        'place.name AS placeName',
+        'instaGuestCollection.id AS insta_guest_collection_id',
+        'instaGuestCollection.placeId AS place_id',
+        'place.name AS place_name',
         'place.latitude AS latitude',
         'place.longitude AS longitude',
-        'JSON_AGG(DISTINCT category.categoryName) AS categories',
+        'place.primaryCategory AS primary_category',
       ])
       .where('instaGuestCollection.instaGuestUserId = :instaGuestUserId', {
         instaGuestUserId,
@@ -56,23 +54,21 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     instaGuestUserId: number,
     region?: string,
     cursorId?: number,
-  ) {
+  ): Promise<any> {
     const query = this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
-      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
-      .leftJoinAndSelect('placeCategories.category', 'category')
       .leftJoinAndSelect('place.placeTags', 'placeTags')
       .leftJoinAndSelect('placeTags.tag', 'tag')
       .leftJoinAndSelect('place.addressComponents', 'addressComponents')
       .select([
-        'instaGuestCollection.id AS InstaGuestCollectionId',
-        'instaGuestCollection.placeId AS placeId',
-        'instaGuestCollection.content AS instagramDescription',
-        'instaGuestCollection.embeddedTag AS embeddedTag',
-        'place.name AS placeName',
+        'instaGuestCollection.id AS insta_guest_collection_id',
+        'instaGuestCollection.placeId AS place_id',
+        'instaGuestCollection.content AS instagram_description',
+        'instaGuestCollection.embeddedTag AS embedded_tag',
+        'place.name AS place_name',
         'place.latitude AS latitude',
         'place.longitude AS longitude',
-        'JSON_AGG(DISTINCT category.categoryName) AS categories',
+        'place.primaryCategory AS primary_category',
         'JSON_AGG(DISTINCT tag.tagName) AS tags',
         'addressComponents.administrativeAreaLevel1 AS address_level1',
         'COALESCE(addressComponents.locality, addressComponents.sublocalityLevel1) AS address_level2',
@@ -104,28 +100,26 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
   async getCollectionDetail(
     instaGuestUserId: number,
     instaGuestCollectionId: number,
-  ) {
+  ): Promise<any> {
     return await this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
       .leftJoinAndSelect('place.openHours', 'openHours')
-      .leftJoinAndSelect('place.placeCategories', 'placeCategories')
-      .leftJoinAndSelect('placeCategories.category', 'category')
       .leftJoinAndSelect('place.placeTags', 'placeTags')
       .leftJoinAndSelect('placeTags.tag', 'tag')
       .leftJoinAndSelect('place.addressComponents', 'addressComponents')
       .select([
-        'instaGuestCollection.id AS InstaGuestCollectionId',
-        'instaGuestCollection.placeId AS placeId',
-        'instaGuestCollection.content AS instagramDescription',
-        'instaGuestCollection.embeddedTag AS embeddedTag',
+        'instaGuestCollection.id AS insta_guest_collection_id',
+        'instaGuestCollection.placeId AS place_id',
+        'instaGuestCollection.content AS instagram_description',
+        'instaGuestCollection.embeddedTag AS embedded_tag',
         'instaGuestCollection.link AS link',
-        'place.name AS placeName',
+        'place.name AS place_name',
         'place.latitude AS latitude',
         'place.longitude AS longitude',
         'place.address AS address',
-        'place.phoneNumber AS phoneNumber',
-        'openHours.opening AS openHours',
-        'JSON_AGG(DISTINCT category.categoryName) AS categories',
+        'place.phoneNumber AS phone_number',
+        'place.primaryCategory AS primary_category',
+        'openHours.opening AS open_hours',
         'JSON_AGG(DISTINCT tag.tagName) AS tags',
         'addressComponents.administrativeAreaLevel1 AS address_level1',
         'COALESCE(addressComponents.locality, addressComponents.sublocalityLevel1) AS address_level2',
@@ -143,21 +137,3 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       .getRawOne();
   }
 }
-
-// export class InstaCollectionDetailDto extends InstaCollectionDto {
-//   @ApiProperty()
-//   @IsNotEmpty()
-//   link: string;
-
-//   @ApiProperty()
-//   @IsNotEmpty()
-//   address: string;
-
-//   @ApiProperty()
-//   @IsNotEmpty()
-//   openHours: string[];
-
-//   @ApiProperty()
-//   @IsNotEmpty()
-//   phoneNumber: string;
-// }
