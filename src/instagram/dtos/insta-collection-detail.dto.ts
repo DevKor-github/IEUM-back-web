@@ -5,8 +5,53 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { InstaCollectionDto } from './insta-collection.dto';
 import { IsNotEmpty } from 'class-validator';
+import { RawInstaCollectionDetail } from 'src/common/interfaces/raw-insta-collection.interface';
 
-export class InstaCollectionDetailDto extends InstaCollectionDto {
+export class InstaCollectionDetailDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  instaGuestCollectionId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  placeId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  placeName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  latitude: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  longitude: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  category: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  instagramDescription: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  embeddedTag: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  tags: string[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  address_level1: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  address_level2: string;
+
   @ApiProperty()
   @IsNotEmpty()
   link: string;
@@ -22,4 +67,23 @@ export class InstaCollectionDetailDto extends InstaCollectionDto {
   @ApiProperty()
   @IsNotEmpty()
   phoneNumber: string;
+
+  constructor(rawInstaCollectionDetail: RawInstaCollectionDetail) {
+    this.instaGuestCollectionId =
+      rawInstaCollectionDetail.insta_guest_collection_id;
+    this.placeId = rawInstaCollectionDetail.place_id;
+    this.placeName = rawInstaCollectionDetail.place_name;
+    this.latitude = parseFloat(rawInstaCollectionDetail.latitude);
+    this.longitude = parseFloat(rawInstaCollectionDetail.longitude);
+    this.category = rawInstaCollectionDetail.primary_category;
+    this.instagramDescription = rawInstaCollectionDetail.instagram_description;
+    this.embeddedTag = rawInstaCollectionDetail.embedded_tag;
+    this.tags = rawInstaCollectionDetail.tags;
+    this.address_level1 = rawInstaCollectionDetail.address_level1;
+    this.address_level2 = rawInstaCollectionDetail.address_level2;
+    this.link = rawInstaCollectionDetail.link;
+    this.address = rawInstaCollectionDetail.address;
+    this.openHours = rawInstaCollectionDetail.open_hours;
+    this.phoneNumber = rawInstaCollectionDetail.phone_number;
+  }
 }

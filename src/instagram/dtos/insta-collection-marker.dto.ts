@@ -1,3 +1,4 @@
+import { RawInstaCollectionMarker } from 'src/common/interfaces/raw-insta-collection.interface';
 //카테고리, 위도, 경도, 장소 이름, 장소 id(누르면 해당 장소 디테일 볼 수 있게). 마커는 총 갯수
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -32,20 +33,16 @@ export class InstaCollectionMarkerDto {
   representativeCategory: string;
 
   constructor(
-    instaGuestCollectionId: number,
-    placeId: number,
-    placeName: string,
-    latitude: number,
-    longitude: number,
-    category: string,
+    RawInstaCollectionMarker: RawInstaCollectionMarker,
     representativeCategory: string,
   ) {
-    this.instaGuestCollectionId = instaGuestCollectionId;
-    this.placeId = placeId;
-    this.placeName = placeName;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.category = category;
+    this.instaGuestCollectionId =
+      RawInstaCollectionMarker.insta_guest_collection_id;
+    this.placeId = RawInstaCollectionMarker.place_id;
+    this.placeName = RawInstaCollectionMarker.place_name;
+    this.latitude = parseFloat(RawInstaCollectionMarker.latitude);
+    this.longitude = parseFloat(RawInstaCollectionMarker.longitude);
+    this.category = RawInstaCollectionMarker.primary_category;
     this.representativeCategory = representativeCategory;
   }
 }
@@ -55,10 +52,10 @@ export class InstaCollectionMarkersListDto {
   total: number;
 
   @ApiProperty({ type: [InstaCollectionMarkerDto] })
-  markers: InstaCollectionMarkerDto[];
+  data: InstaCollectionMarkerDto[];
 
   constructor(total: number, markers: InstaCollectionMarkerDto[]) {
     this.total = total;
-    this.markers = markers;
+    this.data = markers;
   }
 }

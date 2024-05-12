@@ -3,6 +3,11 @@ import { DataSource, Repository } from 'typeorm';
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
 import { CreateInstaGuestCollectionDto } from 'src/instagram/dtos/create-insta-guest-collection-dto';
 import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant';
+import {
+  RawInstaCollection,
+  RawInstaCollectionDetail,
+  RawInstaCollectionMarker,
+} from 'src/common/interfaces/raw-insta-collection.interface';
 
 @Injectable()
 export class InstaGuestCollectionRepository extends Repository<InstaGuestCollection> {
@@ -31,7 +36,9 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     return saveNewInstaGuestCollection;
   }
 
-  async getMarkers(instaGuestUserId: number): Promise<any> {
+  async getMarkers(
+    instaGuestUserId: number,
+  ): Promise<RawInstaCollectionMarker[]> {
     return await this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
       .select([
@@ -54,7 +61,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     instaGuestUserId: number,
     region?: string,
     cursorId?: number,
-  ): Promise<any> {
+  ): Promise<RawInstaCollection[]> {
     const query = this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
       .leftJoinAndSelect('place.placeTags', 'placeTags')
@@ -100,7 +107,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
   async getCollectionDetail(
     instaGuestUserId: number,
     instaGuestCollectionId: number,
-  ): Promise<any> {
+  ): Promise<RawInstaCollectionDetail> {
     return await this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
       .leftJoinAndSelect('place.openHours', 'openHours')

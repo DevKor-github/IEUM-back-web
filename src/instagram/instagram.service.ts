@@ -10,6 +10,11 @@ import {
   InstaCollectionMarkersListDto,
 } from './dtos/insta-collection-marker.dto';
 import { CATEGORY_MAPPING } from 'src/common/constants/category-mapping.constant';
+import {
+  InstaCollectionDto,
+  InstaCollectionsListDto,
+} from './dtos/insta-collection.dto';
+import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
 
 @Injectable()
 export class InstagramService {
@@ -65,18 +70,13 @@ export class InstagramService {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
-    const resultArray = await this.instaGuestCollectionRepository.getMarkers(
+    const rawMarkers = await this.instaGuestCollectionRepository.getMarkers(
       instaGuestUser.id,
     );
-    const markersList = resultArray.map((result) => {
+    const markersList = rawMarkers.map((rawMarker) => {
       return new InstaCollectionMarkerDto(
-        result.insta_guest_collection_id,
-        result.place_id,
-        result.place_name,
-        parseFloat(result.latitude),
-        parseFloat(result.longitude),
-        result.primary_category,
-        this.determineRepresentativeCategory(result.primary_category),
+        rawMarker,
+        this.determineRepresentativeCategory(rawMarker.primary_category),
       );
     });
 
@@ -87,34 +87,31 @@ export class InstagramService {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
-    const collectionsList =
+    const rawInstaCollections =
       await this.instaGuestCollectionRepository.getCollections(
         instaGuestUser.id,
         region,
         cursorId,
       );
-    const hasNextPage = collectionsList.length == INSTA_COLLECTIONS_TAKE + 1;
-    const nextCursorId = hasNextPage
-      ? collectionsList[INSTA_COLLECTIONS_TAKE - 1].instaGuestCollectionId
-      : null;
-
-    return {
-      hasNextPage: hasNextPage,
-      nextCursorId: nextCursorId,
-      collections: hasNextPage
-        ? collectionsList.slice(0, INSTA_COLLECTIONS_TAKE)
-        : collectionsList,
-    };
+    const collectionsList = rawInstaCollections.map((rawCollection) => {
+      return new InstaCollectionDto(rawCollection);
+    });
+    return new InstaCollectionsListDto(collectionsList);
   }
 
-  async getCollectionDetail(instaId: string, instaGuestCollectionId: number) {
+  async getCollectionDetail(
+    instaId: string,
+    instaGuestCollectionId: number,
+  ): Promise<InstaCollectionDetailDto> {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
-    return await this.instaGuestCollectionRepository.getCollectionDetail(
-      instaGuestUser.id,
-      instaGuestCollectionId,
-    );
+    const rawDetail =
+      await this.instaGuestCollectionRepository.getCollectionDetail(
+        instaGuestUser.id,
+        instaGuestCollectionId,
+      );
+    return new InstaCollectionDetailDto(rawDetail);
   }
 
   determineRepresentativeCategory(category: string): string {
