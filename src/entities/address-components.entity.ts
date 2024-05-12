@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,7 @@ export class AddressComponents {
   @Column({ nullable: true })
   country: string;
 
+  @Index()
   @Column({ nullable: true })
   administrativeAreaLevel1: string;
 

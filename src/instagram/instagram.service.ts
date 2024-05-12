@@ -1,3 +1,4 @@
+import { InstaCollectionReqQueryDto } from './dtos/insta-collection-req-query.dto';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InstaGuestUserRepository } from '../repositories/insta-guest-user.repository';
 import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-collection.repository';
@@ -62,10 +63,6 @@ export class InstagramService {
     return createdInstaGuestCollection;
   }
 
-  htmlTest(htmlBody: string): string {
-    return htmlBody;
-  }
-
   async getMarkers(instaId: string): Promise<InstaCollectionMarkersListDto> {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
@@ -83,15 +80,18 @@ export class InstagramService {
     return new InstaCollectionMarkersListDto(markersList.length, markersList);
   }
 
-  async getCollections(instaId: string, region?: string, cursorId?: number) {
+  async getCollections(
+    instaId: string,
+    instaCollectionReqQueryDto: InstaCollectionReqQueryDto,
+  ): Promise<InstaCollectionsListDto> {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
     const rawInstaCollections =
       await this.instaGuestCollectionRepository.getCollections(
         instaGuestUser.id,
-        region,
-        cursorId,
+        instaCollectionReqQueryDto.region,
+        instaCollectionReqQueryDto.cursorId,
       );
     const collectionsList = rawInstaCollections.map((rawCollection) => {
       return new InstaCollectionDto(rawCollection);

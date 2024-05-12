@@ -90,9 +90,12 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       .take(INSTA_COLLECTIONS_TAKE + 1);
 
     if (region) {
-      query.andWhere('addressComponents.administrativeAreaLevel1 = :region', {
-        region: `${region}%`,
-      }); // 특정 문자열로 시작하는 경우에는 인덱스를 타므로 성능 문제 X
+      query.andWhere(
+        'addressComponents.administrativeAreaLevel1 LIKE :region',
+        {
+          region: `${region}%`,
+        },
+      ); // 특정 문자열로 시작하는 경우에는 인덱스를 타므로 성능 문제 X
     }
 
     if (cursorId) {
