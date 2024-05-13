@@ -87,7 +87,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       .addGroupBy('place.id')
       .addGroupBy('addressComponents.id')
       .orderBy('instaGuestCollection.id', 'DESC')
-      .take(INSTA_COLLECTIONS_TAKE + 1);
+      .limit(INSTA_COLLECTIONS_TAKE + 1);
 
     if (region) {
       query.andWhere(
