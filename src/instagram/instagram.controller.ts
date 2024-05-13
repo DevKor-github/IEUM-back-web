@@ -63,7 +63,7 @@ export class InstagramController {
   }
 
   @GetCollectionDetailDecorator()
-  @Get('collections/:instaGuestId/:instaGuestCollectionId')
+  @Get('collections/:instaId/:instaGuestCollectionId')
   async getCollectionDetail(
     @Param('instaId') instaId: string,
     @Param('instaGuestCollectionId') instaGuestCollectionId: number,
