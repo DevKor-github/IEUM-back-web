@@ -1,14 +1,16 @@
 import {
   Column,
+  Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { User } from './user.entity';
-import { CollectionsFolderCuration } from './collections-folder-curation';
-import { CollectionsFolderInstagram } from './collections-folder-instagram';
+import { CollectionsFolderCuration } from './collections-folder-curation.entity';
+import { CollectionsFolderInstagram } from './collections-folder-instagram.entity';
 
+@Entity()
 export class CollectionsFolder {
   @PrimaryGeneratedColumn()
   id: number;
