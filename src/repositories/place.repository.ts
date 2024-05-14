@@ -31,6 +31,7 @@ export class PlaceRepository extends Repository<Place> {
       longitude: placeDetail.location.longitude,
       googlePlaceId: placeDetail.id,
       phoneNumber: placeDetail.nationalPhoneNumber,
+      primaryCategory: placeDetail.types[0],
     });
   }
 }

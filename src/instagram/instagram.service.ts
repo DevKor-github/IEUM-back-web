@@ -1,21 +1,29 @@
+import { InstaCollectionReqQueryDto } from './dtos/insta-collection-req-query.dto';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InstaGuestUserRepository } from '../repositories/insta-guest-user.repository';
 import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-collection.repository';
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
-import { CrawledInstagramDto } from './dto/crawled-instagram-dto';
+import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { PlaceService } from 'src/place/place.service';
+import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant';
+import {
+  InstaCollectionMarkerDto,
+  InstaCollectionMarkersListDto,
+} from './dtos/insta-collection-marker.dto';
+import { CATEGORY_MAPPING } from 'src/common/constants/category-mapping.constant';
+import {
+  InstaCollectionDto,
+  InstaCollectionsListDto,
+} from './dtos/insta-collection.dto';
+import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
 
 @Injectable()
 export class InstagramService {
   constructor(
-    // @InjectRepository(InstaGuestUserRepository)
     private readonly placeService: PlaceService,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
-    // @InjectRepository(InstaGuestCollectionRepository)
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
   ) {}
-
-  //각 function call 내부에서의 db수정이 한 번 밖에 일어나지 않으므로 (연쇄적이지 않음) transaction으로 처리할 필요가 없어보임.
 
   async crawlToDB(
     crawledInstagramDto: CrawledInstagramDto[],
@@ -55,7 +63,65 @@ export class InstagramService {
     return createdInstaGuestCollection;
   }
 
-  htmlTest(htmlBody: string): string {
-    return htmlBody;
+  async getMarkers(instaId: string): Promise<InstaCollectionMarkersListDto> {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    const rawMarkers = await this.instaGuestCollectionRepository.getMarkers(
+      instaGuestUser.id,
+    );
+    const markersList = rawMarkers.map((rawMarker) => {
+      return new InstaCollectionMarkerDto(
+        rawMarker,
+        this.determineRepresentativeCategory(rawMarker.primary_category),
+      );
+    });
+
+    return new InstaCollectionMarkersListDto(markersList.length, markersList);
+  }
+
+  async getCollections(
+    instaId: string,
+    instaCollectionReqQueryDto: InstaCollectionReqQueryDto,
+  ): Promise<InstaCollectionsListDto> {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    const rawInstaCollections =
+      await this.instaGuestCollectionRepository.getCollections(
+        instaGuestUser.id,
+        instaCollectionReqQueryDto.region,
+        instaCollectionReqQueryDto.cursorId,
+      );
+    const collectionsList = rawInstaCollections.map((rawCollection) => {
+      return new InstaCollectionDto(rawCollection);
+    });
+    return new InstaCollectionsListDto(collectionsList);
+  }
+
+  async getCollectionDetail(
+    instaId: string,
+    instaGuestCollectionId: number,
+  ): Promise<InstaCollectionDetailDto> {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    const rawDetail =
+      await this.instaGuestCollectionRepository.getCollectionDetail(
+        instaGuestUser.id,
+        instaGuestCollectionId,
+      );
+    return new InstaCollectionDetailDto(rawDetail);
+  }
+
+  determineRepresentativeCategory(category: string): string {
+    for (const [newCategory, oldCategories] of Object.entries(
+      CATEGORY_MAPPING,
+    )) {
+      if (oldCategories.includes(category)) {
+        return newCategory;
+      }
+    }
+    return 'Others';
   }
 }
