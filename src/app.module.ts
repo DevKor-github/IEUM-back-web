@@ -11,6 +11,8 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
 import { CategoryModule } from './category/category.module';
 import { TagModule } from './tag/tag.module';
 import { ImageModule } from './image/image.module';
+import { AppleModule } from './apple/apple.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { ImageModule } from './image/image.module';
     CategoryModule,
     TagModule,
     ImageModule,
+    AppleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

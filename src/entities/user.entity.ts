@@ -27,20 +27,26 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   nickname: string;
 
-  @Column()
+  @Column({ nullable: true })
   birthDate: Date;
 
-  @Column('char', { length: 1 })
+  @Column('char', { length: 1, nullable: true })
   sex: string;
 
-  @Column('varchar', { length: 4 })
+  @Column('varchar', { length: 4, nullable: true })
   mbti: string;
 
   @Column({ nullable: true })
   instaGuestUserId: number;
+
+  @Column('varchar', { nullable: true })
+  refreshToken: string;
+
+  @Column('boolean', { default: true })
+  initialLogin: boolean;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
