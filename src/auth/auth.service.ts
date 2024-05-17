@@ -8,8 +8,8 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
-import { FirstLoginDto } from './dtos/firstLogin-dto';
-import { UserInfoDto } from './dtos/userInfo-dto';
+import { FirstLoginDto } from './dtos/first-login-dto';
+import { UserInfoDto } from './dtos/user-info-dto';
 
 @Injectable()
 export class AuthService {
@@ -85,7 +85,6 @@ export class AuthService {
       );
     }
     await this.userRepository.deleteUser(id);
-    return { message: `${user.phoneNumber} 계정이 회원 탈퇴 되었습니다.` };
   }
 
   //최초 유저 정보 기입
@@ -99,6 +98,14 @@ export class AuthService {
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
     return { message: `${user.phoneNumber} 최초 정보가 기입 되었습니다.` };
+  }
+
+  async randomHashedPassword(): Promise<string> {
+    const salt = await bcrypt.genSalt(10); //복잡도 10의 salt를 생성
+    const randomBytes = crypto.randomBytes(16);
+    const hashedRandomBytes = await bcrypt.hash(randomBytes, salt);
+
+    return hashedRandomBytes;
   }
 
   //-------------------------애플 ---------------------------
@@ -136,13 +143,5 @@ export class AuthService {
       refreshToken,
       newUser.initialLogin,
     );
-  }
-
-  async randomHashedPassword(): Promise<string> {
-    const salt = await bcrypt.genSalt(10); //복잡도 10의 salt를 생성
-    const randomBytes = crypto.randomBytes(16);
-    const hashedRandomBytes = await bcrypt.hash(randomBytes, salt);
-
-    return hashedRandomBytes;
   }
 }

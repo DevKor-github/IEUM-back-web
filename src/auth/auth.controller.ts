@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { FirstLoginDto } from './dtos/firstLogin-dto';
+import { FirstLoginDto } from './dtos/first-login-dto';
 import { AppleLoginDto } from './dtos/apple-login-dto';
 
 @Controller('auth')
@@ -31,7 +31,7 @@ export class AuthController {
   //최초 로그인시 유저 정보 받아오기.
 
   @UseGuards(AuthGuard('access'))
-  @Put('/fill-userInfo')
+  @Put('/fill-user-info')
   @ApiBearerAuth('Access Token')
   @ApiResponse({ status: 201, description: '유저 정보 입력 성공' })
   @ApiOperation({
@@ -45,7 +45,7 @@ export class AuthController {
   @Delete('/delete-user')
   //스웨거에서 header에 Access Token 담아서 보낸 것을 받기 위함.
   @ApiBearerAuth('Access Token')
-  @ApiResponse({ status: 201, description: '회원 탈퇴 성공' })
+  @ApiResponse({ status: 200, description: '회원 탈퇴 성공' })
   @ApiOperation({
     summary: '회원탈퇴',
   })
@@ -54,9 +54,9 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('refresh'))
-  @Get('/new-access-token')
+  @Get('/refresh')
   @ApiBearerAuth('Refresh Token')
-  @ApiResponse({ status: 201, description: 'Access Token 재발급 성공' })
+  @ApiResponse({ status: 200, description: 'Access Token 재발급 성공' })
   @ApiOperation({
     summary: 'Access Token 재발급',
   })
