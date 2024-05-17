@@ -31,7 +31,7 @@ export class AuthController {
   //최초 로그인시 유저 정보 받아오기.
 
   @UseGuards(AuthGuard('access'))
-  @Put('/fill-user-info')
+  @Post('/fill-user-info')
   @ApiBearerAuth('Access Token')
   @ApiResponse({ status: 201, description: '유저 정보 입력 성공' })
   @ApiOperation({

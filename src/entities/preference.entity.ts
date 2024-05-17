@@ -4,6 +4,7 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -39,4 +40,8 @@ export class Preference {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
+
+  @RelationId((preference: Preference) => preference.user)
+  @Column()
+  userId: number;
 }

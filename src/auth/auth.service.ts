@@ -8,14 +8,16 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
-import { FirstLoginDto } from './dtos/first-login-dto';
+import { FirstLoginDto, UserPreferenceDto } from './dtos/first-login-dto';
 import { UserInfoDto } from './dtos/user-info-dto';
+import { PreferenceRepository } from 'src/repositories/preference.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
+    private readonly preferenceRepository: PreferenceRepository,
   ) {}
 
   //AccessToken 발급
@@ -97,7 +99,12 @@ export class AuthService {
       );
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
-    return { message: `${user.nickname}의 최초 정보가 기입 되었습니다.` };
+    await this.preferenceRepository.fillUserPreference(
+      new UserPreferenceDto(firstLoginDto),
+      id,
+    );
+    const createdUser = await this.userRepository.findUserById(id);
+    return { message: `${createdUser.nickname}에 대한 최초 정보 기입 성공.` };
   }
 
   //-------------------------애플 ---------------------------

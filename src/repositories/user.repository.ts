@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { FirstLoginDto } from 'src/auth/dtos/first-login-dto';
-import { OAuthPlatform } from 'src/common/enums/oAuth-platform-enum';
+import { OAuthPlatform } from 'src/common/enums/oAuth-platform.enum';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
