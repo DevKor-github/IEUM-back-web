@@ -18,6 +18,5 @@ import { UserRepository } from 'src/repositories/user.repository';
     JwtRefreshStrategy,
     UserRepository,
   ],
-  exports: [AuthService],
 })
 export class AuthModule {}

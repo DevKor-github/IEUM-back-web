@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
 import { FirstLoginDto } from './dtos/firstLogin-dto';
+import { UserInfoDto } from './dtos/userInfo-dto';
 
 @Injectable()
 export class AuthService {
@@ -97,5 +99,50 @@ export class AuthService {
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
     return { message: `${user.phoneNumber} 최초 정보가 기입 되었습니다.` };
+  }
+
+  //-------------------------애플 ---------------------------
+  async appleLogin(authId: string) {
+    const user = await this.userRepository.findUserByAppleAuthId(authId);
+
+    //만약 계정이 존재한다면
+    if (user) {
+      const accessToken = this.getAccessToken(user);
+      const refreshToken = this.getRefreshToken(user);
+      const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
+      //계정이 존재하면 DB 상의 유저 refreshToken만 update
+      await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
+      return UserInfoDto.fromCreation(
+        authId,
+        accessToken,
+        refreshToken,
+        user.initialLogin,
+      );
+    }
+
+    //계정이 없다면 새로 추가
+    const randomPassword = await this.randomHashedPassword();
+    const newUser = await this.userRepository.appleSignIn(
+      authId,
+      randomPassword,
+    );
+    const accessToken = this.getAccessToken(newUser);
+    const refreshToken = this.getRefreshToken(newUser);
+    const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
+    await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
+    return UserInfoDto.fromCreation(
+      authId,
+      accessToken,
+      refreshToken,
+      newUser.initialLogin,
+    );
+  }
+
+  async randomHashedPassword(): Promise<string> {
+    const salt = await bcrypt.genSalt(10); //복잡도 10의 salt를 생성
+    const randomBytes = crypto.randomBytes(16);
+    const hashedRandomBytes = await bcrypt.hash(randomBytes, salt);
+
+    return hashedRandomBytes;
   }
 }
