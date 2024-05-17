@@ -23,7 +23,7 @@ export class AuthService {
     return this.jwtService.sign(
       {
         id: user.id,
-        phoneNumber: user.phoneNumber,
+        oAuthId: user.oAuthId,
       },
       { secret: process.env.SECRET_KEY_ACCESS, expiresIn: '12h' },
     );
@@ -34,7 +34,7 @@ export class AuthService {
     return this.jwtService.sign(
       {
         id: user.id,
-        phoneNumber: user.phoneNumber,
+        oAuthId: user.oAuthId,
       },
       { secret: process.env.SECRET_KEY_REFRESH, expiresIn: '6M' },
     );
@@ -84,7 +84,7 @@ export class AuthService {
         '해당 계정이 존재하지 않아 삭제할 수 없습니다.',
       );
     }
-    await this.userRepository.deleteUser(id);
+    await this.userRepository.softDeleteUser(id);
   }
 
   //최초 유저 정보 기입
@@ -97,20 +97,12 @@ export class AuthService {
       );
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
-    return { message: `${user.phoneNumber} 최초 정보가 기입 되었습니다.` };
-  }
-
-  async randomHashedPassword(): Promise<string> {
-    const salt = await bcrypt.genSalt(10); //복잡도 10의 salt를 생성
-    const randomBytes = crypto.randomBytes(16);
-    const hashedRandomBytes = await bcrypt.hash(randomBytes, salt);
-
-    return hashedRandomBytes;
+    return { message: `${user.nickname}의 최초 정보가 기입 되었습니다.` };
   }
 
   //-------------------------애플 ---------------------------
   async appleLogin(authId: string) {
-    const user = await this.userRepository.findUserByAppleAuthId(authId);
+    const user = await this.userRepository.findUserByAppleOAuthId(authId);
 
     //만약 계정이 존재한다면
     if (user) {
@@ -119,29 +111,15 @@ export class AuthService {
       const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
       //계정이 존재하면 DB 상의 유저 refreshToken만 update
       await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
-      return UserInfoDto.fromCreation(
-        authId,
-        accessToken,
-        refreshToken,
-        user.initialLogin,
-      );
+      return UserInfoDto.fromCreation(authId, accessToken, refreshToken);
     }
 
     //계정이 없다면 새로 추가
-    const randomPassword = await this.randomHashedPassword();
-    const newUser = await this.userRepository.appleSignIn(
-      authId,
-      randomPassword,
-    );
+    const newUser = await this.userRepository.appleSignIn(authId);
     const accessToken = this.getAccessToken(newUser);
     const refreshToken = this.getRefreshToken(newUser);
     const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
     await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
-    return UserInfoDto.fromCreation(
-      authId,
-      accessToken,
-      refreshToken,
-      newUser.initialLogin,
-    );
+    return UserInfoDto.fromCreation(authId, accessToken, refreshToken);
   }
 }

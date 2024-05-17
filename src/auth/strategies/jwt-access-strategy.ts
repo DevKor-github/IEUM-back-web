@@ -12,7 +12,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     console.log(payload);
     return {
       id: payload.id,
-      phoneNumber: payload.phoneNumber,
+      oAuthId: payload.oAuthId,
     };
   }
 }

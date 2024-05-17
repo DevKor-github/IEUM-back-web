@@ -13,7 +13,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     console.log(payload);
     return {
       id: payload.id,
-      phoneNumber: payload.phoneNumber,
+      oAuthId: payload.oAuthId,
     };
   }
 }

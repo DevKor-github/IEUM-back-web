@@ -17,13 +17,11 @@ export class UserInfoDto {
     authId: string,
     accessToken: string,
     refreshToken: string,
-    initialLogin: boolean,
   ): UserInfoDto {
     const dto = new UserInfoDto();
     dto.authId = authId;
     dto.accessToken = accessToken;
     dto.refreshToken = refreshToken;
-    dto.initialLogin = initialLogin;
     return dto;
   }
 }

@@ -50,7 +50,7 @@ export class AuthController {
     summary: '회원탈퇴',
   })
   async deleteUser(@Req() req) {
-    return await this.authService.deleteUser(req.user.id);
+    return await this.authService.softDeleteUser(req.user.id);
   }
 
   @UseGuards(AuthGuard('refresh'))

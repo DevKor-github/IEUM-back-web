@@ -12,6 +12,7 @@ import { Trip } from './trip.entity';
 import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
 import { CollectionsFolder } from './collections-folder.entity';
+import { OAuthPlatform } from 'src/common/enums/oAuth-platform-enum';
 
 @Entity()
 export class User {
@@ -22,11 +23,11 @@ export class User {
   @Generated('uuid')
   uuid: string;
 
-  @Column()
-  phoneNumber: string;
+  @Column({ type: 'enum', enum: OAuthPlatform })
+  oAuthPlatform: OAuthPlatform;
 
   @Column()
-  password: string;
+  oAuthId: string;
 
   @Column({ nullable: true })
   nickname: string;
@@ -46,8 +47,8 @@ export class User {
   @Column('varchar', { nullable: true })
   refreshToken: string;
 
-  @Column('boolean', { default: true })
-  initialLogin: boolean;
+  @Column({ nullable: true })
+  deletedAt: Date | null;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
