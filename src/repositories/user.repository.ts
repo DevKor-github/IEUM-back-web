@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { FirstLoginDto } from 'src/auth/dtos/first-login-dto';
+import { OAuthPlatform } from 'src/common/enums/oAuth-platform-enum';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -46,7 +47,10 @@ export class UserRepository extends Repository<User> {
 
   async appleSignIn(oAuthId: string): Promise<User> {
     //로그인 후 앱 자체 회원가입 직후 flow 통한 나머지 field 채워야 함.
-    const user = this.create({ oAuthId: oAuthId, oAuthPlatform: 0 });
+    const user = this.create({
+      oAuthId: oAuthId,
+      oAuthPlatform: OAuthPlatform.Apple,
+    });
     return await this.save(user);
   }
 }

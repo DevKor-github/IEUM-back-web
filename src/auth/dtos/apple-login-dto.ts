@@ -5,5 +5,5 @@ export class AppleLoginDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  authId: string;
+  oAuthId: string;
 }

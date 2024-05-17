@@ -1,5 +1,5 @@
 export enum OAuthPlatform {
-  Apple,
-  Kakao,
-  Naver,
+  Apple = 'Apple',
+  Kakao = 'Kakao',
+  Naver = 'Naver',
 }

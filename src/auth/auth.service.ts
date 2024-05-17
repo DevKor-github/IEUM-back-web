@@ -101,8 +101,8 @@ export class AuthService {
   }
 
   //-------------------------애플 ---------------------------
-  async appleLogin(authId: string) {
-    const user = await this.userRepository.findUserByAppleOAuthId(authId);
+  async appleLogin(oAuthId: string) {
+    const user = await this.userRepository.findUserByAppleOAuthId(oAuthId);
 
     //만약 계정이 존재한다면
     if (user) {
@@ -110,16 +110,32 @@ export class AuthService {
       const refreshToken = this.getRefreshToken(user);
       const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
       //계정이 존재하면 DB 상의 유저 refreshToken만 update
-      await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
-      return UserInfoDto.fromCreation(authId, accessToken, refreshToken);
+      await this.userRepository.renewRefreshToken(oAuthId, hashedRefreshToken);
+      if (user.nickname != null) {
+        return {
+          userInfo: UserInfoDto.fromCreation(
+            oAuthId,
+            accessToken,
+            refreshToken,
+          ),
+          initialLogin: 'false',
+        };
+      }
+      return {
+        userInfo: UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken),
+        initialLogin: 'true',
+      };
     }
 
     //계정이 없다면 새로 추가
-    const newUser = await this.userRepository.appleSignIn(authId);
+    const newUser = await this.userRepository.appleSignIn(oAuthId);
     const accessToken = this.getAccessToken(newUser);
     const refreshToken = this.getRefreshToken(newUser);
     const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
-    await this.userRepository.renewRefreshToken(authId, hashedRefreshToken);
-    return UserInfoDto.fromCreation(authId, accessToken, refreshToken);
+    await this.userRepository.renewRefreshToken(oAuthId, hashedRefreshToken);
+    return {
+      userInfo: UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken),
+      initialLogin: 'true',
+    };
   }
 }
