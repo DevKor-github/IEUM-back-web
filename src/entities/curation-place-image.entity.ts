@@ -26,7 +26,9 @@ export class CurationPlaceImage {
   @Column()
   curationPlaceId: number;
 
-  @ManyToOne(() => Image, (image) => image.curationPlaceImages)
+  @ManyToOne(() => Image, (image) => image.curationPlaceImages, {
+    onDelete: 'CASCADE',
+  })
   image: Image;
 
   @RelationId(

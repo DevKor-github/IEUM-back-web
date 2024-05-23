@@ -17,6 +17,7 @@ export class CollectionsFolderInstagram {
   @ManyToOne(
     () => CollectionsFolder,
     (collectionsFolder) => collectionsFolder.collectionsFolderInstagrams,
+    { onDelete: 'CASCADE' },
   )
   collectionsFolder: CollectionsFolder;
 
@@ -27,7 +28,7 @@ export class CollectionsFolderInstagram {
   @Column()
   collectionsFolderId: number;
 
-  @ManyToOne(() => InstaGuestCollection)
+  @ManyToOne(() => InstaGuestCollection, { onDelete: 'CASCADE' })
   instaGuestCollection: InstaGuestCollection;
 
   @RelationId(
