@@ -12,9 +12,10 @@ import { Trip } from './trip.entity';
 import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
 import { CollectionsFolder } from './collections-folder.entity';
+import { BasicDate } from './basic-date.entity';
 
 @Entity()
-export class User {
+export class User extends BasicDate {
   @PrimaryGeneratedColumn()
   id: number;
 
