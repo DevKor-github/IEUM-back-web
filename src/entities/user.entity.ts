@@ -47,8 +47,8 @@ export class User {
   @Column('varchar', { nullable: true })
   refreshToken: string;
 
-  @Column({ nullable: true })
-  deletedAt: Date | null;
+  // @Column({ nullable: true })
+  // deletedAt: Date | null;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];

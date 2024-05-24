@@ -70,14 +70,25 @@ export class AuthController {
     );
   }
 
+  @UseGuards(AuthGuard('access'))
+  @Get('/check-first')
+  @ApiBearerAuth('Access Token')
+  @ApiResponse({ status: 200, description: '로그인 성공: 메인 화면으로' })
+  @ApiResponse({
+    status: 403,
+    description: '회원 가입 절차 끝나지 않음. 사용자 추가 정보 기입 필요.',
+  })
+  async checkFirst(@Req() req) {
+    return this.authService.checkFirst(req.user.id);
+  }
+
   // -------------------------- 애플 --------------------------------
   //애플 로그인
-  @Post('/apple')
+  @Post('/apple-login')
   @ApiOperation({
     summary: '애플 sign in',
   })
   @ApiResponse({ status: 201, description: '애플 로그인 성공' })
-  @ApiResponse({ status: 999, description: '회원 가입 절차 끝나지 않음.' })
   async login(@Body() appleLoginDto: AppleLoginDto) {
     return this.authService.appleLogin(appleLoginDto.oAuthId);
   }

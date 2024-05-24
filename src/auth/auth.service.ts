@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -107,6 +108,15 @@ export class AuthService {
     return { message: `${createdUser.nickname}에 대한 최초 정보 기입 성공.` };
   }
 
+  async checkFirst(id: number) {
+    const user = await this.userRepository.findUserById(id);
+    if (user.nickname == null) {
+      throw new ForbiddenException(
+        '해당 계정의 필수 입력사항이 아직 입력되지 않았습니다.',
+      );
+    }
+  }
+
   //-------------------------애플 ---------------------------
   async appleLogin(oAuthId: string) {
     const user = await this.userRepository.findUserByAppleOAuthId(oAuthId);
@@ -118,20 +128,8 @@ export class AuthService {
       const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
       //계정이 존재하면 DB 상의 유저 refreshToken만 update
       await this.userRepository.renewRefreshToken(oAuthId, hashedRefreshToken);
-      if (user.nickname != null) {
-        return {
-          userInfo: UserInfoDto.fromCreation(
-            oAuthId,
-            accessToken,
-            refreshToken,
-          ),
-          initialLogin: 'false',
-        };
-      }
-      return {
-        userInfo: UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken),
-        initialLogin: 'true',
-      };
+
+      return UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken);
     }
 
     //계정이 없다면 새로 추가
@@ -140,9 +138,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken(newUser);
     const hashedRefreshToken = await this.hashRefreshToken(refreshToken);
     await this.userRepository.renewRefreshToken(oAuthId, hashedRefreshToken);
-    return {
-      userInfo: UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken),
-      initialLogin: 'true',
-    };
+
+    return UserInfoDto.fromCreation(oAuthId, accessToken, refreshToken);
   }
 }

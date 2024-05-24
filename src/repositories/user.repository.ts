@@ -16,9 +16,10 @@ export class UserRepository extends Repository<User> {
   }
 
   async softDeleteUser(id: number) {
-    const user = await this.findUserById(id);
-    user.deletedAt = new Date();
-    await this.save(user);
+    // const user = await this.findUserById(id);
+    // user.deletedAt = new Date();
+    // await this.save(user);
+    await this.softDelete({ id: id });
   }
 
   async renewRefreshToken(oAuthId: string, refreshToken: string) {
