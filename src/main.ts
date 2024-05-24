@@ -11,7 +11,6 @@ async function bootstrap() {
   initializeTransactionalContext();
 
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -26,7 +25,10 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
+  app.enableCors({
+    origin: ['http://localhost:3000', 'https://ieum.devkor.club'],
+    credentials: true,
+  });
   await app.listen(process.env.PORT);
 
   if (module.hot) {
