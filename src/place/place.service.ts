@@ -13,8 +13,8 @@ import { PlaceRepository } from 'src/repositories/place.repository';
 import { PlaceDetailResDto } from './dtos/place-detail-res.dto';
 import {
   CreatePlaceCategoryReqDto,
-  createPlaceImageReqDto,
-  createPlaceTagReqDto,
+  CreatePlaceImageReqDto,
+  CreatePlaceTagReqDto,
 } from './dtos/create-place-relation-req.dto';
 import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
 import { PlaceImageRepository } from 'src/repositories/place-image.repository';
@@ -124,7 +124,7 @@ export class PlaceService {
     return await this.placeCategoryRepository.save(createPlaceCategoryReqDto);
   }
 
-  async createPlaceTag(createPlaceTagReqDto: createPlaceTagReqDto) {
+  async createPlaceTag(createPlaceTagReqDto: CreatePlaceTagReqDto) {
     const existedRelation = await this.placeTagRepository.findOne({
       where: {
         placeId: createPlaceTagReqDto.placeId,
@@ -135,7 +135,7 @@ export class PlaceService {
     return await this.placeTagRepository.save(createPlaceTagReqDto);
   }
 
-  async createPlaceImage(createPlaceImageReqDto: createPlaceImageReqDto) {
+  async createPlaceImage(createPlaceImageReqDto: CreatePlaceImageReqDto) {
     const existedRelation = await this.placeImageRepository.findOne({
       where: {
         placeId: createPlaceImageReqDto.placeId,

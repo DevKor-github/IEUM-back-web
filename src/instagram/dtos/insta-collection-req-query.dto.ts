@@ -11,17 +11,7 @@ export class InstaCollectionReqQueryDto {
   @ApiProperty({
     description: '지역명. 광역자치단체의 첫 두글자',
     required: false,
-    examples: [
-      '서울',
-      '경기',
-      '인천',
-      '부산',
-      '경상',
-      '충청',
-      '강원',
-      '전라',
-      '제주',
-    ],
+    example: '부산',
   })
   region: string;
 }

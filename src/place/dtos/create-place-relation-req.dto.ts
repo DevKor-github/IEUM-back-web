@@ -8,7 +8,7 @@ export class CreatePlaceCategoryReqDto {
   categoryId: number;
 }
 
-export class createPlaceTagReqDto {
+export class CreatePlaceTagReqDto {
   @ApiProperty()
   placeId: number;
 
@@ -16,7 +16,7 @@ export class createPlaceTagReqDto {
   tagId: number;
 }
 
-export class createPlaceImageReqDto {
+export class CreatePlaceImageReqDto {
   @ApiProperty()
   placeId: number;
 

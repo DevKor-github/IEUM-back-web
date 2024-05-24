@@ -4,8 +4,8 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SearchByTextReqDto } from './dtos/search-by-text-req.dto';
 import {
   CreatePlaceCategoryReqDto,
-  createPlaceImageReqDto,
-  createPlaceTagReqDto,
+  CreatePlaceImageReqDto,
+  CreatePlaceTagReqDto,
 } from './dtos/create-place-relation-req.dto';
 import { CreatePlaceReqDto } from './dtos/create-place-req.dto';
 
@@ -57,14 +57,14 @@ export class PlaceController {
 
   @ApiOperation({ summary: 'Create placeTag' })
   @Post('place-tags')
-  async createPlaceTag(@Body() createPlaceTagReqDto: createPlaceTagReqDto) {
+  async createPlaceTag(@Body() createPlaceTagReqDto: CreatePlaceTagReqDto) {
     return await this.placeService.createPlaceTag(createPlaceTagReqDto);
   }
 
   @ApiOperation({ summary: 'Create placeImage' })
   @Post('place-images')
   async createPlaceImage(
-    @Body() createPlaceImageReqDto: createPlaceImageReqDto,
+    @Body() createPlaceImageReqDto: CreatePlaceImageReqDto,
   ) {
     return await this.placeService.createPlaceImage(createPlaceImageReqDto);
   }
