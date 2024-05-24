@@ -10,9 +10,10 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { CurationPlace } from './curation-place.entity';
+import { BasicDate } from './basic-date.entity';
 
 @Entity()
-export class Curation {
+export class Curation extends BasicDate {
   @PrimaryGeneratedColumn()
   id: number;
 

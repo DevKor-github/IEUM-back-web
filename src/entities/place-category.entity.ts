@@ -20,7 +20,9 @@ export class PlaceCategory {
   @Column()
   placeId: number;
 
-  @ManyToOne(() => Category, (category) => category.placeCategories)
+  @ManyToOne(() => Category, (category) => category.placeCategories, {
+    onDelete: 'CASCADE',
+  })
   category: Category;
 
   @RelationId((placeCategory: PlaceCategory) => placeCategory.category)

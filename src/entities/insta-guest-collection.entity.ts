@@ -17,6 +17,7 @@ export class InstaGuestCollection {
   @ManyToOne(
     () => InstaGuestUser,
     (instaGuestUser) => instaGuestUser.instaGuestCollections,
+    { onDelete: 'CASCADE' },
   )
   instaGuestUser: InstaGuestUser;
 
