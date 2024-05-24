@@ -16,6 +16,7 @@ export class CollectionsFolderCuration {
   @ManyToOne(
     () => CollectionsFolder,
     (collectionsFolder) => collectionsFolder.collectionsFolderCurations,
+    { onDelete: 'CASCADE' },
   )
   collectionsFolder: CollectionsFolder;
 
@@ -26,7 +27,7 @@ export class CollectionsFolderCuration {
   @Column()
   collectionsFolderId: number;
 
-  @ManyToOne(() => UserCurationCollection)
+  @ManyToOne(() => UserCurationCollection, { onDelete: 'CASCADE' })
   userCurationCollection: UserCurationCollection;
 
   @RelationId(

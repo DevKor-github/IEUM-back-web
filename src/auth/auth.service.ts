@@ -6,19 +6,15 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
-import { FirstLoginDto, UserPreferenceDto } from './dtos/first-login-dto';
 import { UserInfoDto } from './dtos/user-info-dto';
-import { PreferenceRepository } from 'src/repositories/preference.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
-    private readonly preferenceRepository: PreferenceRepository,
   ) {}
 
   //AccessToken 발급
@@ -88,24 +84,6 @@ export class AuthService {
       );
     }
     await this.userRepository.softDeleteUser(id);
-  }
-
-  //최초 유저 정보 기입
-
-  async fillUserInfo(firstLoginDto: FirstLoginDto, id: number) {
-    const user = await this.userRepository.findUserById(id);
-    if (!user) {
-      throw new BadRequestException(
-        '해당 계정이 존재하지 않아 정보를 기입할 수 없습니다.',
-      );
-    }
-    await this.userRepository.fillUserInfo(firstLoginDto, id);
-    await this.preferenceRepository.fillUserPreference(
-      new UserPreferenceDto(firstLoginDto),
-      id,
-    );
-    const createdUser = await this.userRepository.findUserById(id);
-    return { message: `${createdUser.nickname}에 대한 최초 정보 기입 성공.` };
   }
 
   async checkFirst(id: number) {

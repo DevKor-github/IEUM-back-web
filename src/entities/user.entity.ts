@@ -13,9 +13,10 @@ import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
 import { CollectionsFolder } from './collections-folder.entity';
 import { OAuthPlatform } from 'src/common/enums/oAuth-platform.enum';
+import { BasicDate } from './basic-date.entity';
 
 @Entity()
-export class User {
+export class User extends BasicDate {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -46,9 +47,6 @@ export class User {
 
   @Column('varchar', { nullable: true })
   refreshToken: string;
-
-  // @Column({ nullable: true })
-  // deletedAt: Date | null;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];

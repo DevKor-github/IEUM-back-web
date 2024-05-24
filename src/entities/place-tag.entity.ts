@@ -20,7 +20,7 @@ export class PlaceTag {
   @Column()
   placeId: number;
 
-  @ManyToOne(() => Tag, (tag) => tag.placeTags)
+  @ManyToOne(() => Tag, (tag) => tag.placeTags, { onDelete: 'CASCADE' })
   tag: Tag;
 
   @RelationId((placeTag: PlaceTag) => placeTag.tag)

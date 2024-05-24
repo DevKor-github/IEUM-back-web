@@ -13,7 +13,7 @@ export class PlaceImage {
   @RelationId((placeImage: PlaceImage) => placeImage.place)
   placeId: number;
 
-  @ManyToOne(() => Image, (image) => image.placeImages)
+  @ManyToOne(() => Image, (image) => image.placeImages, { onDelete: 'CASCADE' })
   image: Image;
 
   @RelationId((placeImage: PlaceImage) => placeImage.image)

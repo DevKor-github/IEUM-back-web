@@ -20,26 +20,12 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { FirstLoginDto } from './dtos/first-login-dto';
 import { AppleLoginDto } from './dtos/apple-login-dto';
 
 @Controller('auth')
 @ApiTags('인증 인가')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  //최초 로그인시 유저 정보 받아오기.
-
-  @UseGuards(AuthGuard('access'))
-  @Post('/fill-user-info')
-  @ApiBearerAuth('Access Token')
-  @ApiResponse({ status: 201, description: '유저 정보 입력 성공' })
-  @ApiOperation({
-    summary: '최초 유저 정보 기입',
-  })
-  async fillUserInfo(@Body() firstLoginDto: FirstLoginDto, @Req() req) {
-    return await this.authService.fillUserInfo(firstLoginDto, req.user.id);
-  }
 
   @UseGuards(AuthGuard('access'))
   @Delete('/delete-user')

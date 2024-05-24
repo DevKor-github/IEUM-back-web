@@ -1,5 +1,9 @@
 import { InstaCollectionReqQueryDto } from './dtos/insta-collection-req-query.dto';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InstaGuestUserRepository } from '../repositories/insta-guest-user.repository';
 import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-collection.repository';
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
@@ -67,6 +71,9 @@ export class InstagramService {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
+    if (!instaGuestUser) {
+      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+    }
     const rawMarkers = await this.instaGuestCollectionRepository.getMarkers(
       instaGuestUser.id,
     );
@@ -87,6 +94,9 @@ export class InstagramService {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
+    if (!instaGuestUser) {
+      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+    }
     const rawInstaCollections =
       await this.instaGuestCollectionRepository.getCollections(
         instaGuestUser.id,
@@ -106,11 +116,17 @@ export class InstagramService {
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
+    if (!instaGuestUser) {
+      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+    }
     const rawDetail =
       await this.instaGuestCollectionRepository.getCollectionDetail(
         instaGuestUser.id,
         instaGuestCollectionId,
       );
+    if (!rawDetail) {
+      throw new NotFoundException('해당하는 컬렉션이 없습니다.');
+    }
     return new InstaCollectionDetailDto(rawDetail);
   }
 
