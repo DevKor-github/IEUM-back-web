@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserRepository } from 'src/repositories/user.repository';
 import { JwtAccessStrategy } from 'src/auth/strategies/jwt-access-strategy';
+import { JwtAccessNicknameCheckStrategy } from 'src/auth/strategies/jwt-access-nickname-check-strategy';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Preference])],
@@ -16,6 +17,7 @@ import { JwtAccessStrategy } from 'src/auth/strategies/jwt-access-strategy';
     PreferenceRepository,
     UserRepository,
     JwtAccessStrategy,
+    JwtAccessNicknameCheckStrategy,
   ],
 })
 export class UserModule {}

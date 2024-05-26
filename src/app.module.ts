@@ -12,7 +12,6 @@ import { CategoryModule } from './category/category.module';
 import { TagModule } from './tag/tag.module';
 import { ImageModule } from './image/image.module';
 import { AuthModule } from './auth/auth.module';
-import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 
 @Module({
