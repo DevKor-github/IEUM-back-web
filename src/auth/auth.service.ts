@@ -75,26 +75,6 @@ export class AuthService {
     };
   }
 
-  //회원탈퇴
-  async deleteUser(id: number) {
-    const user = await this.userRepository.findUserById(id);
-    if (!user) {
-      throw new BadRequestException(
-        '해당 계정이 존재하지 않아 삭제할 수 없습니다.',
-      );
-    }
-    await this.userRepository.softDeleteUser(id);
-  }
-
-  async checkFirst(id: number) {
-    const user = await this.userRepository.findUserById(id);
-    if (user.nickname == null) {
-      throw new ForbiddenException(
-        '해당 계정의 필수 입력사항이 아직 입력되지 않았습니다.',
-      );
-    }
-  }
-
   //-------------------------애플 ---------------------------
   async appleLogin(oAuthId: string) {
     const user = await this.userRepository.findUserByAppleOAuthId(oAuthId);

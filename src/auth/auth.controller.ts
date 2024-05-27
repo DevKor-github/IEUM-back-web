@@ -27,18 +27,6 @@ import { AppleLoginDto } from './dtos/apple-login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('access'))
-  @Delete('/delete-user')
-  //스웨거에서 header에 Access Token 담아서 보낸 것을 받기 위함.
-  @ApiBearerAuth('Access Token')
-  @ApiResponse({ status: 200, description: '회원 탈퇴 성공' })
-  @ApiOperation({
-    summary: '회원탈퇴',
-  })
-  async deleteUser(@Req() req) {
-    return await this.authService.deleteUser(req.user.id);
-  }
-
   @UseGuards(AuthGuard('refresh'))
   @Get('/refresh')
   @ApiBearerAuth('Refresh Token')
@@ -58,12 +46,12 @@ export class AuthController {
 
   // -------------------------- 애플 --------------------------------
   //애플 로그인
-  @Post('/apple-login')
+  @Post('/login/apple')
   @ApiOperation({
     summary: '애플 sign in',
   })
   @ApiResponse({ status: 201, description: '애플 로그인 성공' })
-  async login(@Body() appleLoginDto: AppleLoginDto) {
+  async appleLogin(@Body() appleLoginDto: AppleLoginDto) {
     return this.authService.appleLogin(appleLoginDto.oAuthId);
   }
   //애플에서 유저가 "이메일 변경, 앱 서비스 해지, 애플 계정 탈퇴"를 했을 경우,
