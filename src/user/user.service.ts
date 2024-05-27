@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { FirstLoginDto } from './dtos/first-login-dto';
+import { FirstLoginDto } from './dtos/first-login.dto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { BadRequestException } from '@nestjs/common';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
-import { UserPreferenceDto } from './dtos/first-login-dto';
+import { UserPreferenceDto } from './dtos/first-login.dto';
 
 @Injectable()
 export class UserService {

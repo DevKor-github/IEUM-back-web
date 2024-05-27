@@ -7,7 +7,7 @@ import {
   ApiBearerAuth,
   ApiTags,
 } from '@nestjs/swagger';
-import { FirstLoginDto } from './dtos/first-login-dto';
+import { FirstLoginDto } from './dtos/first-login.dto';
 import { UserService } from './user.service';
 
 @Controller('user')

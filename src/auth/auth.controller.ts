@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AppleLoginDto } from './dtos/apple-login-dto';
+import { AppleLoginDto } from './dtos/apple-login.dto';
 
 @Controller('auth')
 @ApiTags('인증 인가')
