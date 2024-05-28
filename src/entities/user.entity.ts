@@ -12,6 +12,7 @@ import { Trip } from './trip.entity';
 import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
 import { CollectionsFolder } from './collections-folder.entity';
+import { OAuthPlatform } from 'src/common/enums/oAuth-platform.enum';
 import { BasicDate } from './basic-date.entity';
 
 @Entity()
@@ -23,26 +24,29 @@ export class User extends BasicDate {
   @Generated('uuid')
   uuid: string;
 
-  @Column()
-  phoneNumber: string;
+  @Column({ type: 'enum', enum: OAuthPlatform })
+  oAuthPlatform: OAuthPlatform;
 
   @Column()
-  password: string;
+  oAuthId: string;
 
-  @Column()
+  @Column({ nullable: true })
   nickname: string;
 
-  @Column()
+  @Column({ nullable: true })
   birthDate: Date;
 
-  @Column('char', { length: 1 })
+  @Column('char', { length: 1, nullable: true })
   sex: string;
 
-  @Column('varchar', { length: 4 })
+  @Column('varchar', { length: 4, nullable: true })
   mbti: string;
 
   @Column({ nullable: true })
   instaGuestUserId: number;
+
+  @Column('varchar', { nullable: true })
+  refreshToken: string;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
