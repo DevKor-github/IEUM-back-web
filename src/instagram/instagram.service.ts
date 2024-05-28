@@ -14,7 +14,8 @@ import {
   InstaCollectionMarkerDto,
   InstaCollectionMarkersListDto,
 } from './dtos/insta-collection-marker.dto';
-import { CATEGORY_MAPPING } from 'src/common/constants/category-mapping.constant';
+import { CATEGORIES_MAPPING } from 'src/common/constants/categories-mapping.constant';
+import { CATEGORIES_TRANSLATED } from 'src/common/constants/categories-translated.constant';
 import {
   InstaCollectionDto,
   InstaCollectionsListDto,
@@ -104,6 +105,9 @@ export class InstagramService {
         instaCollectionReqQueryDto.cursorId,
       );
     const collectionsList = rawInstaCollections.map((rawCollection) => {
+      rawCollection.primary_category = this.translateCategoryName(
+        rawCollection.primary_category,
+      );
       return new InstaCollectionDto(rawCollection);
     });
     return new InstaCollectionsListDto(collectionsList);
@@ -127,17 +131,27 @@ export class InstagramService {
     if (!rawDetail) {
       throw new NotFoundException('해당하는 컬렉션이 없습니다.');
     }
+    rawDetail.primary_category = this.translateCategoryName(
+      rawDetail.primary_category,
+    );
     return new InstaCollectionDetailDto(rawDetail);
   }
 
   determineRepresentativeCategory(category: string): string {
     for (const [newCategory, oldCategories] of Object.entries(
-      CATEGORY_MAPPING,
+      CATEGORIES_MAPPING,
     )) {
       if (oldCategories.includes(category)) {
         return newCategory;
       }
     }
     return 'Others';
+  }
+
+  translateCategoryName(category: string): string {
+    if (CATEGORIES_TRANSLATED[category]) {
+      return CATEGORIES_TRANSLATED[category];
+    }
+    return '기타';
   }
 }

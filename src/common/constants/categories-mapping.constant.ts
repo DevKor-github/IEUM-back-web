@@ -1,4 +1,4 @@
-export const CATEGORY_MAPPING = {
+export const CATEGORIES_MAPPING = {
   Restaurant: [
     'american_restaurant',
     'asian_restaurant',
