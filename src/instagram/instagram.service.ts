@@ -14,7 +14,7 @@ import {
   InstaCollectionMarkerDto,
   InstaCollectionMarkersListDto,
 } from './dtos/insta-collection-marker.dto';
-import { CATEGORY_MAPPING } from 'src/common/constants/category-mapping.constant';
+import { CATEGORIES_MAPPING } from 'src/common/constants/categories-mapping.constant';
 import {
   InstaCollectionDto,
   InstaCollectionsListDto,
@@ -132,7 +132,7 @@ export class InstagramService {
 
   determineRepresentativeCategory(category: string): string {
     for (const [newCategory, oldCategories] of Object.entries(
-      CATEGORY_MAPPING,
+      CATEGORIES_MAPPING,
     )) {
       if (oldCategories.includes(category)) {
         return newCategory;
