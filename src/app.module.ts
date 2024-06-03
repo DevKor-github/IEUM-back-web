@@ -13,6 +13,10 @@ import { TagModule } from './tag/tag.module';
 import { ImageModule } from './image/image.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { TripModule } from './trip/trip.module';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { CustomResponseInterceptor } from './common/interceptors/custom-response.interceptor';
+import { CustomExceptionFilter } from './common/filters/custom-exception.filter';
 
 @Module({
   imports: [
@@ -46,8 +50,16 @@ import { UserModule } from './user/user.module';
     ImageModule,
     AuthModule,
     UserModule,
+    TripModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CustomResponseInterceptor,
+    },
+    { provide: APP_FILTER, useClass: CustomExceptionFilter },
+  ],
 })
 export class AppModule {}
