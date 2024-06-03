@@ -11,7 +11,10 @@ import { User } from 'src/entities/user.entity';
 import { UserInfoDto } from './dtos/user-info.dto';
 import { CustomException } from 'src/common/exceptions/custom.exception';
 import { AuthException } from 'src/common/enums/auth-exception.enum';
+<<<<<<< HEAD
 import { NotValidRefreshException } from 'src/common/exceptions/auth.exception';
+=======
+>>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
 
 @Injectable()
 export class AuthService {
@@ -69,7 +72,14 @@ export class AuthService {
     console.log(isRefreshTokenMatch);
 
     if (!isRefreshTokenMatch) {
+<<<<<<< HEAD
       throw NotValidRefreshException();
+=======
+      throw new CustomException(
+        AuthException[AuthException.NotValidRefresh],
+        AuthException.NotValidRefresh,
+      );
+>>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
     }
     const newAccessToken = this.getAccessToken(user);
 
