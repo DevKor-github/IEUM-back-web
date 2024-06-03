@@ -4,6 +4,9 @@ import { UserRepository } from 'src/repositories/user.repository';
 import { BadRequestException } from '@nestjs/common';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserPreferenceDto } from './dtos/first-login.dto';
+import { CustomException } from 'src/common/exceptions/custom.exception';
+import { UserException } from 'src/common/enums/user-exception.enum';
+import { NotValidUserException } from 'src/common/exceptions/user.exception';
 
 @Injectable()
 export class UserService {
@@ -16,9 +19,7 @@ export class UserService {
   async fillUserInfo(firstLoginDto: FirstLoginDto, id: number) {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-      throw new BadRequestException(
-        '해당 계정이 존재하지 않아 정보를 기입할 수 없습니다.',
-      );
+      throw NotValidUserException();
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
     await this.preferenceRepository.fillUserPreference(
