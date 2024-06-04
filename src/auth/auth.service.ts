@@ -35,7 +35,7 @@ export class AuthService {
         id: user.id,
         oAuthId: user.oAuthId,
       },
-      { secret: process.env.SECRET_KEY_REFRESH, expiresIn: '6M' },
+      { secret: process.env.SECRET_KEY_REFRESH, expiresIn: '180d' },
     );
   }
 
