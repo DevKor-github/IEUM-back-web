@@ -1,9 +1,10 @@
-import { UserException } from '../enums/user-exception.enum';
+import { ErrorCodeEnum } from '../enums/error-code.enum';
 import { CustomException } from './custom.exception';
 
-export function NotValidUserException(): CustomException {
+export function NotValidUserException(message?: string): CustomException {
   return new CustomException(
-    UserException[UserException.NotValidUser],
-    UserException.NotValidUser,
+    ErrorCodeEnum[ErrorCodeEnum.NotValidUser],
+    ErrorCodeEnum.NotValidUser,
+    message,
   );
 }

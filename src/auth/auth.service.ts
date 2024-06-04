@@ -9,12 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
 import { UserInfoDto } from './dtos/user-info.dto';
-import { CustomException } from 'src/common/exceptions/custom.exception';
-import { AuthException } from 'src/common/enums/auth-exception.enum';
-<<<<<<< HEAD
 import { NotValidRefreshException } from 'src/common/exceptions/auth.exception';
-=======
->>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
 
 @Injectable()
 export class AuthService {
@@ -65,6 +60,10 @@ export class AuthService {
   async newAccessToken(id: number, refreshToken: string) {
     //refreshToken이 해당 유저의 refreshtoken이 맞는지 체크
     const user = await this.userRepository.findUserById(id);
+    console.log({
+      refreshToken: refreshToken,
+      hashedRefresh: user.refreshToken,
+    });
     const isRefreshTokenMatch = await this.compareRefreshToken(
       refreshToken,
       user.refreshToken,
@@ -72,14 +71,7 @@ export class AuthService {
     console.log(isRefreshTokenMatch);
 
     if (!isRefreshTokenMatch) {
-<<<<<<< HEAD
       throw NotValidRefreshException();
-=======
-      throw new CustomException(
-        AuthException[AuthException.NotValidRefresh],
-        AuthException.NotValidRefresh,
-      );
->>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
     }
     const newAccessToken = this.getAccessToken(user);
 

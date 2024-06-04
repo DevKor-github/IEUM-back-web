@@ -5,6 +5,12 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { CustomException } from '../exceptions/custom.exception';
+import {
+  DefaultBadRequestException,
+  DefaultInternalServerErrorException,
+  DefaultUnauthorizedException,
+  DefaultUndefinedException,
+} from '../exceptions/default.exception';
 
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
@@ -12,27 +18,41 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    let errorCode: number;
-    let message: string;
     if (exception instanceof CustomException) {
-      errorCode = exception.errorCode;
-      message = exception.message;
     } else if (exception instanceof HttpException) {
-      errorCode = exception.getStatus();
-      message = (exception.getResponse() as any).message;
+      switch (exception.getStatus()) {
+        case 400:
+          exception = DefaultBadRequestException(
+            (exception.getResponse() as any).message,
+          );
+          break;
+        case 401:
+          exception = DefaultUnauthorizedException(
+            (exception.getResponse() as any).message,
+          );
+          break;
+        default:
+          let responseMessage = exception.getResponse();
+          //response가 string형태가 아니고 object 형태일 때
+          if (typeof responseMessage === 'object') {
+            responseMessage = (exception.getResponse() as any)
+              .message as string;
+          }
+          exception = DefaultUndefinedException(responseMessage);
+          break;
+        // JSON.stringify(exception?.getResponse().message),
+      }
     } else if (exception instanceof Error) {
-      //Internal Server Error는 에러로 처리됨.
-      errorCode = 500;
-      message = 'Internal Server Error';
+      exception = DefaultInternalServerErrorException(exception.message);
     }
 
-    // const data = response.data;
-    // const errorCode = exception?.errorCode;
-    // console.log(errorCode);
+    const errorCodeName = exception.errorCodeName;
+    const errorCode = exception.errorCode;
+    const message = exception.message;
 
     response.json({
-      status: 'fail',
-      errorCode: errorCode,
+      statusCode: errorCode,
+      errorCodeName: errorCodeName,
       message: message,
     });
   }

@@ -4,12 +4,7 @@ import { UserRepository } from 'src/repositories/user.repository';
 import { BadRequestException } from '@nestjs/common';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserPreferenceDto } from './dtos/first-login.dto';
-import { CustomException } from 'src/common/exceptions/custom.exception';
-import { UserException } from 'src/common/enums/user-exception.enum';
-<<<<<<< HEAD
 import { NotValidUserException } from 'src/common/exceptions/user.exception';
-=======
->>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
 
 @Injectable()
 export class UserService {
@@ -22,14 +17,7 @@ export class UserService {
   async fillUserInfo(firstLoginDto: FirstLoginDto, id: number) {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-<<<<<<< HEAD
       throw NotValidUserException();
-=======
-      throw new CustomException(
-        UserException[UserException.NotValidUser],
-        UserException.NotValidUser,
-      );
->>>>>>> c75010a51a4eb92507b1da49cf6571dea2e105a5
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
     await this.preferenceRepository.fillUserPreference(

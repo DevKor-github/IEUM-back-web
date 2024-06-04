@@ -1,9 +1,10 @@
-import { AuthException } from '../enums/auth-exception.enum';
+import { ErrorCodeEnum } from '../enums/error-code.enum';
 import { CustomException } from './custom.exception';
 
-export function NotValidRefreshException(): CustomException {
+export function NotValidRefreshException(messsage?: string): CustomException {
   return new CustomException(
-    AuthException[AuthException.NotValidRefresh],
-    AuthException.NotValidRefresh,
+    ErrorCodeEnum[ErrorCodeEnum.NotValidRefresh],
+    ErrorCodeEnum.NotValidRefresh,
+    messsage,
   );
 }

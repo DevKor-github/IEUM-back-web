@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CustomResponse } from '../enums/custom-response.enum';
 
 @Injectable()
 export class CustomResponseInterceptor implements NestInterceptor {
@@ -13,8 +14,11 @@ export class CustomResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         return {
-          status: 'success',
-          data: data,
+          statusCode:
+            data !== undefined
+              ? CustomResponse.SuccessWithData
+              : CustomResponse.SuccessWithoutData,
+          data: data !== undefined ? data : null,
         };
       }),
     );
