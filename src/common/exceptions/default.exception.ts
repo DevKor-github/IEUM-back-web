@@ -1,38 +1,42 @@
 import { ErrorCodeEnum } from '../enums/error-code.enum';
 import { CustomException } from './custom.exception';
 
-export function DefaultBadRequestException(message?: string): CustomException {
-  return new CustomException(
-    ErrorCodeEnum[ErrorCodeEnum.DefaultBadRequest],
-    ErrorCodeEnum.DefaultBadRequest,
-    message,
-  );
+export class DefaultBadRequestException extends CustomException {
+  constructor(message?: string) {
+    super(
+      ErrorCodeEnum[ErrorCodeEnum.DefaultBadRequest],
+      ErrorCodeEnum.DefaultBadRequest,
+      message,
+    );
+  }
 }
 
-export function DefaultUnauthorizedException(
-  message?: string,
-): CustomException {
-  return new CustomException(
-    ErrorCodeEnum[ErrorCodeEnum.DefaultUnauthorized],
-    ErrorCodeEnum.DefaultUnauthorized,
-    message,
-  );
+export class DefaultUnauthorizedException extends CustomException {
+  constructor(message?: string) {
+    super(
+      ErrorCodeEnum[ErrorCodeEnum.DefaultUnauthorized],
+      ErrorCodeEnum.DefaultUnauthorized,
+      message,
+    );
+  }
 }
 
-export function DefaultUndefinedException(message?: string): CustomException {
-  return new CustomException(
-    ErrorCodeEnum[ErrorCodeEnum.DefaultUndefined],
-    ErrorCodeEnum.DefaultUndefined,
-    message,
-  );
+export class DefaultUndefinedException extends CustomException {
+  constructor(message?: string) {
+    super(
+      ErrorCodeEnum[ErrorCodeEnum.DefaultUndefined],
+      ErrorCodeEnum.DefaultUndefined,
+      message,
+    );
+  }
 }
 
-export function DefaultInternalServerErrorException(
-  message?: string,
-): CustomException {
-  return new CustomException(
-    ErrorCodeEnum[ErrorCodeEnum.DefaultInternalServerError],
-    ErrorCodeEnum.DefaultInternalServerError,
-    message,
-  );
+export class DefaultInternalServerErrorException extends CustomException {
+  constructor(message?: string) {
+    super(
+      ErrorCodeEnum[ErrorCodeEnum.DefaultInternalServerError],
+      ErrorCodeEnum.DefaultInternalServerError,
+      message,
+    );
+  }
 }

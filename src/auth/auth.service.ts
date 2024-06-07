@@ -71,7 +71,7 @@ export class AuthService {
     console.log(isRefreshTokenMatch);
 
     if (!isRefreshTokenMatch) {
-      throw NotValidRefreshException();
+      throw new NotValidRefreshException();
     }
     const newAccessToken = this.getAccessToken(user);
 

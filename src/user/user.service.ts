@@ -17,7 +17,7 @@ export class UserService {
   async fillUserInfo(firstLoginDto: FirstLoginDto, id: number) {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-      throw NotValidUserException();
+      throw new NotValidUserException();
     }
     await this.userRepository.fillUserInfo(firstLoginDto, id);
     await this.preferenceRepository.fillUserPreference(

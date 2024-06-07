@@ -22,12 +22,12 @@ export class CustomExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof HttpException) {
       switch (exception.getStatus()) {
         case 400:
-          exception = DefaultBadRequestException(
+          exception = new DefaultBadRequestException(
             (exception.getResponse() as any).message,
           );
           break;
         case 401:
-          exception = DefaultUnauthorizedException(
+          exception = new DefaultUnauthorizedException(
             (exception.getResponse() as any).message,
           );
           break;
@@ -38,12 +38,12 @@ export class CustomExceptionFilter implements ExceptionFilter {
             responseMessage = (exception.getResponse() as any)
               .message as string;
           }
-          exception = DefaultUndefinedException(responseMessage);
+          exception = new DefaultUndefinedException(responseMessage);
           break;
         // JSON.stringify(exception?.getResponse().message),
       }
     } else if (exception instanceof Error) {
-      exception = DefaultInternalServerErrorException(exception.message);
+      exception = new DefaultInternalServerErrorException(exception.message);
     }
 
     const errorCodeName = exception.errorCodeName;
