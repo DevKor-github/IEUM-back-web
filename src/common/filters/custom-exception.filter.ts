@@ -18,42 +18,49 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
+    let processedException: any;
+
     if (exception instanceof CustomException) {
+      processedException = exception;
     } else if (exception instanceof HttpException) {
-      switch (exception.getStatus()) {
-        case 400:
-          exception = new DefaultBadRequestException(
-            (exception.getResponse() as any).message,
-          );
-          break;
-        case 401:
-          exception = new DefaultUnauthorizedException(
-            (exception.getResponse() as any).message,
-          );
-          break;
-        default:
-          let responseMessage = exception.getResponse();
-          //response가 string형태가 아니고 object 형태일 때
-          if (typeof responseMessage === 'object') {
-            responseMessage = (exception.getResponse() as any)
-              .message as string;
-          }
-          exception = new DefaultUndefinedException(responseMessage);
-          break;
-        // JSON.stringify(exception?.getResponse().message),
-      }
+      processedException = this.handleHttpException(exception);
     } else if (exception instanceof Error) {
-      exception = new DefaultInternalServerErrorException(exception.message);
+      processedException = new DefaultInternalServerErrorException(
+        exception.message,
+      );
+    } else {
+      processedException = new DefaultUndefinedException(
+        '알 수 없는 에러 발생.',
+      );
     }
 
-    const errorCodeName = exception.errorCodeName;
-    const errorCode = exception.errorCode;
-    const message = exception.message;
+    const { errorCode, message } = processedException;
 
     response.json({
       statusCode: errorCode,
-      errorCodeName: errorCodeName,
       message: message,
     });
+  }
+
+  private handleHttpException(exception: HttpException): CustomException {
+    switch (exception.getStatus()) {
+      case 400:
+        return new DefaultBadRequestException(
+          this.getResponseMessage(exception),
+        );
+      case 401:
+        return new DefaultUnauthorizedException(
+          this.getResponseMessage(exception),
+        );
+      default:
+        return new DefaultUndefinedException(
+          this.getResponseMessage(exception),
+        );
+    }
+  }
+
+  private getResponseMessage(exception: HttpException): string {
+    const response = exception.getResponse();
+    return typeof response === 'object' ? (response as any).message : response;
   }
 }
