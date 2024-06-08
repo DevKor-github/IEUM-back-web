@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRepository } from 'src/repositories/user.repository';
 import { User } from 'src/entities/user.entity';
 import { UserInfoDto } from './dtos/user-info.dto';
+import { NotValidRefreshException } from 'src/common/exceptions/auth.exception';
 
 @Injectable()
 export class AuthService {
@@ -59,13 +60,18 @@ export class AuthService {
   async newAccessToken(id: number, refreshToken: string) {
     //refreshToken이 해당 유저의 refreshtoken이 맞는지 체크
     const user = await this.userRepository.findUserById(id);
+    console.log({
+      refreshToken: refreshToken,
+      hashedRefresh: user.refreshToken,
+    });
     const isRefreshTokenMatch = await this.compareRefreshToken(
       refreshToken,
       user.refreshToken,
     );
+    console.log(isRefreshTokenMatch);
 
     if (!isRefreshTokenMatch) {
-      throw new UnauthorizedException('Refresh Token이 일치하지 않습니다.');
+      throw new NotValidRefreshException();
     }
     const newAccessToken = this.getAccessToken(user);
 
