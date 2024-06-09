@@ -13,6 +13,7 @@ import { PlaceTag } from './place-tag.entity';
 import { PlaceImage } from './place-image.entity';
 import { OpenHours } from './open-hours.entity';
 import { AddressComponents } from './address-components.entity';
+import { FolderPlace } from './folder-place.entity';
 
 @Entity()
 export class Place {
@@ -77,4 +78,8 @@ export class Place {
   //장소-이미지
   @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)
   placeImages: PlaceImage[];
+
+  //폴더-장소
+  @OneToMany(() => FolderPlace, (folderPlace) => folderPlace.place)
+  folderPlaces: FolderPlace[];
 }

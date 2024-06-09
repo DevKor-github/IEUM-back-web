@@ -13,6 +13,7 @@ import { Preference } from './preference.entity';
 import { Folder } from './folder.entity';
 import { OAuthPlatform } from 'src/common/enums/oAuth-platform.enum';
 import { BasicDate } from './basic-date.entity';
+import { UserCurationLike } from './user-curation-like.entity';
 
 @Entity()
 export class User extends BasicDate {
@@ -55,4 +56,10 @@ export class User extends BasicDate {
 
   @OneToMany(() => Folder, (Folder) => Folder.user)
   folders: Folder[];
+
+  @OneToMany(
+    () => UserCurationLike,
+    (userCurationLike) => userCurationLike.user,
+  )
+  userCurationLikes: UserCurationLike[];
 }

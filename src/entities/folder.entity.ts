@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { FolderType } from 'src/common/enums/folder-type.enum';
+import { FolderPlace } from './folder-place.entity';
+import { FolderTag } from './folder-tag.entity';
 
 @Entity()
 export class Folder {
@@ -26,4 +28,10 @@ export class Folder {
 
   @Column({ type: 'enum', enum: FolderType, default: FolderType.Custom })
   type: number;
+
+  @OneToMany(() => FolderPlace, (folderPlace) => folderPlace.folder)
+  folderPlaces: FolderPlace[];
+
+  @OneToMany(() => FolderTag, (folderTag) => folderTag.folder)
+  folderTags: FolderTag[];
 }
