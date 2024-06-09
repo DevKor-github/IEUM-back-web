@@ -9,9 +9,8 @@ import {
 } from 'typeorm';
 import { InstaGuestUser } from './insta-guest-user.entity';
 import { Trip } from './trip.entity';
-import { UserCurationCollection } from './user-curation-collection.entity';
 import { Preference } from './preference.entity';
-import { CollectionsFolder } from './collections-folder.entity';
+import { Folder } from './folder.entity';
 import { OAuthPlatform } from 'src/common/enums/oAuth-platform.enum';
 import { BasicDate } from './basic-date.entity';
 
@@ -51,18 +50,9 @@ export class User extends BasicDate {
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
 
-  @OneToMany(
-    () => UserCurationCollection,
-    (userCurationCollection) => userCurationCollection.user,
-  )
-  userCurationCollections: UserCurationCollection[];
-
   @OneToOne(() => Preference, (preference) => preference.user)
   preference: Preference;
 
-  @OneToMany(
-    () => CollectionsFolder,
-    (collectionsFolder) => collectionsFolder.user,
-  )
-  collectionsFolders: CollectionsFolder[];
+  @OneToMany(() => Folder, (Folder) => Folder.user)
+  folders: Folder[];
 }
