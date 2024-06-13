@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Generated,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -42,8 +43,11 @@ export class User extends BasicDate {
   @Column('varchar', { length: 4, nullable: true })
   mbti: string;
 
-  @Column({ nullable: true })
-  instaGuestUserId: number;
+  @OneToOne(() => InstaGuestUser, (instaGuestUser) => instaGuestUser.user, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'instaGuestUserId' })
+  instaGuestUser?: InstaGuestUser;
 
   @Column('varchar', { nullable: true })
   refreshToken: string;

@@ -27,4 +27,7 @@ export class InstaGuestUser {
     (instaGuestCollection) => instaGuestCollection.instaGuestUser,
   )
   instaGuestCollections: InstaGuestCollection[];
+
+  @OneToOne(() => User, (user) => user.instaGuestUser)
+  user?: User;
 }
