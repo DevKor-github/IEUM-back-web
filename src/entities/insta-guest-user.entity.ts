@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { InstaGuestCollection } from './insta-guest-collection.entity';
+import { InstaGuestFolder } from './insta-guest-folder.entity';
 
 @Entity()
 export class InstaGuestUser {
@@ -30,4 +31,10 @@ export class InstaGuestUser {
 
   @OneToOne(() => User, (user) => user.instaGuestUser)
   user?: User;
+
+  @OneToOne(
+    () => InstaGuestFolder,
+    (instaGuestFolder) => instaGuestFolder.instaGuestUser,
+  )
+  instaGuestFolder: InstaGuestFolder;
 }

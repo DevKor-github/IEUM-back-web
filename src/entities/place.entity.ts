@@ -14,6 +14,7 @@ import { PlaceImage } from './place-image.entity';
 import { OpenHours } from './open-hours.entity';
 import { AddressComponents } from './address-components.entity';
 import { FolderPlace } from './folder-place.entity';
+import { InstaGuestFolder } from './insta-guest-folder.entity';
 
 @Entity()
 export class Place {
@@ -82,4 +83,10 @@ export class Place {
   //폴더-장소
   @OneToMany(() => FolderPlace, (folderPlace) => folderPlace.place)
   folderPlaces: FolderPlace[];
+
+  @OneToMany(
+    () => InstaGuestFolder,
+    (instaGuestFolder) => instaGuestFolder.instaGuestFolderPlaces,
+  )
+  instaGuestFolderPlaces: InstaGuestFolder[];
 }
