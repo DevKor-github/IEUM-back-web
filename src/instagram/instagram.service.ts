@@ -1,3 +1,5 @@
+import { InstaGuestFolderPlaceRepository } from './../repositories/insta-guest-folder-place.repository';
+import { InstaGuestFolder } from './../entities/insta-guest-folder.entity';
 import { InstaCollectionReqQueryDto } from './dtos/insta-collection-req-query.dto';
 import {
   Injectable,
@@ -21,6 +23,7 @@ import {
   InstaCollectionsListDto,
 } from './dtos/insta-collection.dto';
 import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
+import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
 
 @Injectable()
 export class InstagramService {
@@ -28,6 +31,8 @@ export class InstagramService {
     private readonly placeService: PlaceService,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
+    private readonly instaGuestFolderRepository: InstaGuestFolderRepository,
+    private readonly instaGuestFolderPlaceRepository: InstaGuestFolderPlaceRepository,
   ) {}
 
   async crawlToDB(
@@ -44,6 +49,14 @@ export class InstagramService {
           await this.instaGuestUserRepository.createInstaGuestUser({
             instaId: dto.instagramId,
           });
+        const instaGuestFolder =
+          await this.instaGuestFolderRepository.createInstaGuestFolder(
+            instaGuestUser,
+          );
+        await this.instaGuestFolderPlaceRepository.createInstaGuestFolderPlace(
+          placeInfo.id,
+          instaGuestFolder.id,
+        );
         const instaGuestCollection =
           await this.instaGuestCollectionRepository.createInstaGuestCollection({
             instaGuestUserId: instaGuestUser.id,
