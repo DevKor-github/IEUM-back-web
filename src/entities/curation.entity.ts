@@ -11,6 +11,8 @@ import {
 import { User } from './user.entity';
 import { CurationPlace } from './curation-place.entity';
 import { BasicDate } from './basic-date.entity';
+import { CurationTag } from './curation-tag.entity';
+import { UserCurationLike } from './user-curation-like.entity';
 
 @Entity()
 export class Curation extends BasicDate {
@@ -41,4 +43,13 @@ export class Curation extends BasicDate {
 
   @OneToMany(() => CurationPlace, (curationPlace) => curationPlace.curation)
   curationPlaces: CurationPlace[];
+
+  @OneToMany(() => CurationTag, (curationTag) => curationTag.curation)
+  curationTags: CurationTag[];
+
+  @OneToMany(
+    () => UserCurationLike,
+    (userCurationLike) => userCurationLike.curation,
+  )
+  userCurationLikes: UserCurationLike[];
 }
