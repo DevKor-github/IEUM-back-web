@@ -40,6 +40,7 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     instaGuestUserId: number,
     region?: string,
     cursorId?: number,
+    placeId?: number,
   ): Promise<RawInstaCollection[]> {
     const query = this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
@@ -75,6 +76,12 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
           region: `${region}%`,
         },
       ); // 특정 문자열로 시작하는 경우에는 인덱스를 타므로 성능 문제 X
+    }
+
+    if (placeId) {
+      query.andWhere('instaGuestCollection.placeId = :placeId', {
+        placeId,
+      });
     }
 
     if (cursorId) {

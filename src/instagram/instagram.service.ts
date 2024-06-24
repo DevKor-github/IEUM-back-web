@@ -116,6 +116,7 @@ export class InstagramService {
         instaGuestUser.id,
         instaCollectionReqQueryDto.region,
         instaCollectionReqQueryDto.cursorId,
+        instaCollectionReqQueryDto.placeId,
       );
     const collectionsList = rawInstaCollections.map((rawCollection) => {
       rawCollection.primary_category = this.translateCategoryName(
