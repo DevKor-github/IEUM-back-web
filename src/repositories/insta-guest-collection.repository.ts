@@ -6,7 +6,7 @@ import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant
 import {
   RawInstaCollection,
   RawInstaCollectionDetail,
-  RawInstaCollectionMarker,
+  RawInstaPlaceMarker,
 } from 'src/common/interfaces/raw-insta-collection.interface';
 
 @Injectable()
@@ -34,27 +34,6 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
       newInstaGuestCollection,
     );
     return saveNewInstaGuestCollection;
-  }
-
-  async getMarkers(
-    instaGuestUserId: number,
-  ): Promise<RawInstaCollectionMarker[]> {
-    return await this.createQueryBuilder('instaGuestCollection')
-      .leftJoinAndSelect('instaGuestCollection.place', 'place')
-      .select([
-        'instaGuestCollection.id AS insta_guest_collection_id',
-        'instaGuestCollection.placeId AS place_id',
-        'place.name AS place_name',
-        'place.latitude AS latitude',
-        'place.longitude AS longitude',
-        'place.primaryCategory AS primary_category',
-      ])
-      .where('instaGuestCollection.instaGuestUserId = :instaGuestUserId', {
-        instaGuestUserId,
-      })
-      .groupBy('instaGuestCollection.id')
-      .addGroupBy('place.id')
-      .getRawMany();
   }
 
   async getCollections(
