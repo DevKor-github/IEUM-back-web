@@ -52,5 +52,5 @@ jobs:
           cat .env
       - name: Run Docker
         run: |
-          docker stop ${{env.DOCKER_CONTAINER}} && docker rm ${{env.DOCKER_CONTAINER}} && docker rmi ${{env.DOCKER_IMAGE}}:latest
-          docker run --env-file ./.env --platform linux/amd64 -d --name ${{env.DOCKER_CONTAINER}} --network host --restart always ${{env.DOCKER_IMAGE}}:latest
+          sudo docker stop ${{env.DOCKER_CONTAINER}} && sudo docker rm ${{env.DOCKER_CONTAINER}} && sudo docker rmi ${{env.DOCKER_IMAGE}}:latest
+          sudo docker run --env-file ./.env --platform linux/amd64 -d --name ${{env.DOCKER_CONTAINER}} --network host --restart always ${{env.DOCKER_IMAGE}}:latest
