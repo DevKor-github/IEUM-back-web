@@ -68,7 +68,7 @@ jobs:
         run: |
           sudo docker stop ${{ env.DOCKER_CONTAINER_MAIN }} || true
           sudo docker rm ${{ env.DOCKER_CONTAINER_MAIN }} || true
-          sudo docker run --env-file ./.env --platform linux/amd64 -d --name ${{ env.DOCKER_CONTAINER_MAIN }} --network host --restart always -p 3030:3030 ${{ env.DOCKER_IMAGE_MAIN }}:latest
+          sudo docker run --env-file ./.env --platform linux/amd64 -d --name ${{ env.DOCKER_CONTAINER_MAIN }} --network host --restart always ${{ env.DOCKER_IMAGE_MAIN }}:latest
   deploy_dev:
     needs: build
     if: github.ref == 'refs/heads/develop'
@@ -91,4 +91,4 @@ jobs:
         run: |
           sudo docker stop ${{ env.DOCKER_CONTAINER_DEV }} || true
           sudo docker rm ${{ env.DOCKER_CONTAINER_DEV }} || true
-          sudo docker run --env-file ./.env --platform linux/amd64 -d --name ${{ env.DOCKER_CONTAINER_DEV }} --network host --restart always -p 4040:${{secrets.PORT}} ${{ env.DOCKER_IMAGE_DEV }}:latest
+          sudo docker run --env-file ./.env --platform linux/amd64 -p 4040:${{secrets.PORT}} -d --name ${{ env.DOCKER_CONTAINER_DEV }} --restart always ${{ env.DOCKER_IMAGE_DEV }}:latest
