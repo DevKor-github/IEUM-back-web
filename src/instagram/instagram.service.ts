@@ -88,7 +88,7 @@ export class InstagramService {
     if (!instaGuestUser) {
       throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
     }
-    const rawMarkers = await this.instaGuestCollectionRepository.getMarkers(
+    const rawMarkers = await this.instaGuestUserRepository.getMarkers(
       instaGuestUser.id,
     );
     const markersList = rawMarkers.map((rawMarker) => {
@@ -116,6 +116,7 @@ export class InstagramService {
         instaGuestUser.id,
         instaCollectionReqQueryDto.region,
         instaCollectionReqQueryDto.cursorId,
+        instaCollectionReqQueryDto.placeId,
       );
     const collectionsList = rawInstaCollections.map((rawCollection) => {
       rawCollection.primary_category = this.translateCategoryName(
