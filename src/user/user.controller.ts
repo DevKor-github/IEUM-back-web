@@ -41,6 +41,7 @@ export class UserController {
     return await this.userService.deleteUser(req.user.id);
   }
 
+  //@UseGuards(AuthGuard('access'))
   @Post('/me/connect-instagram')
   @ApiBearerAuth('Access Token')
   @ApiOkResponse({ description: '인스타그램 연동 성공' })

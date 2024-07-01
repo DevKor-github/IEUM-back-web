@@ -27,4 +27,19 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
     const saveNewInstaGuestUser = await this.save(newInstaGuestUser);
     return saveNewInstaGuestUser;
   }
+
+  async getInstaGuestPlaces(
+    instaGuestUserId: number,
+  ): Promise<{ place_id: number }[]> {
+    const instaGuestPlaces = await this.createQueryBuilder('instaGuestUser')
+      .leftJoin('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
+      .leftJoin(
+        'instaGuestFolder.instaGuestFolderPlaces',
+        'instaGuestFolderPlace',
+      )
+      .select(['instaGuestFolderPlace.placeId AS place_id'])
+      .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
+      .getRawMany();
+    return instaGuestPlaces;
+  }
 }

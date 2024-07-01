@@ -6,6 +6,9 @@ import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserPreferenceDto } from './dtos/first-login.dto';
 import { NotValidUserException } from 'src/common/exceptions/user.exception';
 import { InstaGuestUserRepository } from 'src/repositories/insta-guest-user.repository';
+import { FolderRepository } from 'src/repositories/folder.repository';
+import { FolderType } from 'src/common/enums/folder-type.enum';
+import { FolderPlaceRepository } from 'src/repositories/folder-place.repository';
 
 @Injectable()
 export class UserService {
@@ -13,6 +16,8 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
     private readonly preferenceRepository: PreferenceRepository,
+    private readonly folderRepository: FolderRepository,
+    private readonly folderPlaceRepository: FolderPlaceRepository,
   ) {}
 
   //최초 유저 정보 기입
@@ -42,17 +47,28 @@ export class UserService {
   }
 
   async connectInstagram(userId: number, instaId: string) {
-    console.log(userId, instaId);
     const instaGuestUser = await this.instaGuestUserRepository.findOne({
       where: { instaId: instaId },
     });
-    console.log(instaGuestUser.id);
     const user = await this.userRepository.connectInstagram(
       userId,
       instaGuestUser,
     );
-    console.log(user);
+    return await this.syncInstagramFolder(user.id, instaGuestUser.id);
+  }
 
-    return user;
+  async syncInstagramFolder(userId: number, instaGuestUserId: number) {
+    const instaGuestPlaces: { place_id: number }[] =
+      await this.instaGuestUserRepository.getInstaGuestPlaces(instaGuestUserId);
+
+    const instaFolder = await this.folderRepository.getInstaFolder(userId);
+    console.log(instaFolder);
+    instaGuestPlaces.forEach((place) => {
+      this.folderPlaceRepository.createFolderPlace(
+        instaFolder.id,
+        place.place_id,
+      ); //어차피 syncInstagramFolder를 await로 호출할 것이므로 굳이 async-await를 사용하지 않아도 됨.
+    });
+    return instaFolder;
   }
 }
