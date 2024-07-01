@@ -35,6 +35,13 @@ export class InstagramService {
     private readonly instaGuestFolderPlaceRepository: InstaGuestFolderPlaceRepository,
   ) {}
 
+  async test(instaId: string) {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+      relations: ['user'],
+    });
+    return instaGuestUser.user ? instaGuestUser.user : 'no user';
+  }
   async crawlToDB(
     crawledInstagramDto: CrawledInstagramDto[],
   ): Promise<InstaGuestCollection[]> {
