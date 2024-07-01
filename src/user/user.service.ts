@@ -5,11 +5,13 @@ import { BadRequestException } from '@nestjs/common';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserPreferenceDto } from './dtos/first-login.dto';
 import { NotValidUserException } from 'src/common/exceptions/user.exception';
+import { InstaGuestUserRepository } from 'src/repositories/insta-guest-user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly instaGuestUserRepository: InstaGuestUserRepository,
     private readonly preferenceRepository: PreferenceRepository,
   ) {}
 
@@ -37,5 +39,20 @@ export class UserService {
       );
     }
     await this.userRepository.softDeleteUser(id);
+  }
+
+  async connectInstagram(userId: number, instaId: string) {
+    console.log(userId, instaId);
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+    });
+    console.log(instaGuestUser.id);
+    const user = await this.userRepository.connectInstagram(
+      userId,
+      instaGuestUser,
+    );
+    console.log(user);
+
+    return user;
   }
 }

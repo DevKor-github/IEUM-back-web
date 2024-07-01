@@ -8,6 +8,7 @@ import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserRepository } from 'src/repositories/user.repository';
 import { JwtAccessStrategy } from 'src/auth/strategies/jwt-access.strategy';
 import { JwtAccessNicknameCheckStrategy } from 'src/auth/strategies/jwt-access-nickname-check.strategy';
+import { InstaGuestUserRepository } from 'src/repositories/insta-guest-user.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Preference])],
@@ -16,6 +17,7 @@ import { JwtAccessNicknameCheckStrategy } from 'src/auth/strategies/jwt-access-n
     UserService,
     PreferenceRepository,
     UserRepository,
+    InstaGuestUserRepository,
     JwtAccessStrategy,
     JwtAccessNicknameCheckStrategy,
   ],
