@@ -54,15 +54,20 @@ export class UserService {
       userId,
       instaGuestUser,
     );
-    return await this.syncInstagramFolder(user.id, instaGuestUser.id);
+    return await this.syncInstagramFolder(user.id);
   }
 
-  async syncInstagramFolder(userId: number, instaGuestUserId: number) {
+  async syncInstagramFolder(userId: number) {
+    const instaGuestUser = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    const instaGuestUserId = instaGuestUser.id;
+
     const instaGuestPlaces: { place_id: number }[] =
       await this.instaGuestUserRepository.getInstaGuestPlaces(instaGuestUserId);
 
     const instaFolder = await this.folderRepository.getInstaFolder(userId);
-    console.log(instaFolder);
+
     instaGuestPlaces.forEach((place) => {
       this.folderPlaceRepository.createFolderPlace(
         instaFolder.id,
