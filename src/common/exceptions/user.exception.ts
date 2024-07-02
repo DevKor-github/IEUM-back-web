@@ -6,3 +6,9 @@ export class NotValidUserException extends CustomException {
     super(ErrorCodeEnum.NotValidUser, message);
   }
 }
+
+export class NotValidInstaGuestUserException extends CustomException {
+  constructor(message?: string) {
+    super(ErrorCodeEnum.NotValidInstaGuestUser, message);
+  }
+}
