@@ -24,6 +24,8 @@ import {
 } from './dtos/insta-collection.dto';
 import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
 import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
+import { FolderRepository } from 'src/repositories/folder.repository';
+import { FolderPlaceRepository } from 'src/repositories/folder-place.repository';
 
 @Injectable()
 export class InstagramService {
@@ -33,6 +35,8 @@ export class InstagramService {
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
     private readonly instaGuestFolderRepository: InstaGuestFolderRepository,
     private readonly instaGuestFolderPlaceRepository: InstaGuestFolderPlaceRepository,
+    private readonly folderRepository: FolderRepository,
+    private readonly folderPlaceRepository: FolderPlaceRepository,
   ) {}
 
   async test(instaId: string) {
@@ -60,10 +64,18 @@ export class InstagramService {
           await this.instaGuestFolderRepository.createInstaGuestFolder(
             instaGuestUser,
           );
-        await this.instaGuestFolderPlaceRepository.createInstaGuestFolderPlace(
-          placeInfo.id,
-          instaGuestFolder.id,
-        );
+        const createdFolderPlace =
+          await this.instaGuestFolderPlaceRepository.createInstaGuestFolderPlace(
+            placeInfo.id,
+            instaGuestFolder.id,
+          );
+        if (createdFolderPlace.status === 'created' && instaGuestUser.user) {
+          const appendeFolderPlace = await this.appendPlaceToInstaFolder(
+            instaGuestUser.id,
+            placeInfo.id,
+          );
+          if (appendeFolderPlace) console.log('appended!');
+        }
         const instaGuestCollection =
           await this.instaGuestCollectionRepository.createInstaGuestCollection({
             instaGuestUserId: instaGuestUser.id,
@@ -155,6 +167,17 @@ export class InstagramService {
       rawDetail.primary_category,
     );
     return new InstaCollectionDetailDto(rawDetail);
+  }
+
+  async appendPlaceToInstaFolder(connectedUserId: number, placeId: number) {
+    const instaFolder =
+      await this.folderRepository.getInstaFolder(connectedUserId);
+    const createdFolderPlace =
+      await this.folderPlaceRepository.createFolderPlace(
+        instaFolder.id,
+        placeId,
+      );
+    return createdFolderPlace;
   }
 
   determineRepresentativeCategory(category: string): string {

@@ -9,6 +9,8 @@ import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-col
 import { PlaceModule } from 'src/place/place.module';
 import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
 import { InstaGuestFolderPlaceRepository } from 'src/repositories/insta-guest-folder-place.repository';
+import { FolderRepository } from 'src/repositories/folder.repository';
+import { FolderPlaceRepository } from 'src/repositories/folder-place.repository';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { InstaGuestFolderPlaceRepository } from 'src/repositories/insta-guest-fo
     InstaGuestCollectionRepository,
     InstaGuestFolderRepository,
     InstaGuestFolderPlaceRepository,
+    FolderRepository,
+    FolderPlaceRepository,
   ],
 })
 export class InstagramModule {}

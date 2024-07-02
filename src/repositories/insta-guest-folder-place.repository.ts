@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateInstaGuestFolderPlaceResult } from 'src/common/interfaces/create-insta-guest-place-result.interface';
 import { InstaGuestFolderPlace } from 'src/entities/insta-guest-folder-place.entity';
 import { Repository, DataSource } from 'typeorm';
 
@@ -11,13 +12,13 @@ export class InstaGuestFolderPlaceRepository extends Repository<InstaGuestFolder
   async createInstaGuestFolderPlace(
     placeId: number,
     instaGuestFolderId: number,
-  ): Promise<InstaGuestFolderPlace> {
+  ): Promise<CreateInstaGuestFolderPlaceResult> {
     const instaGuestFolderPlace = await this.findOne({
       where: { instaGuestFolderId: instaGuestFolderId, placeId: placeId },
     });
 
     if (instaGuestFolderPlace) {
-      return instaGuestFolderPlace;
+      return { status: 'existing', data: instaGuestFolderPlace };
     }
 
     const newInstaGuestFolderPlace = new InstaGuestFolderPlace();
@@ -26,6 +27,6 @@ export class InstaGuestFolderPlaceRepository extends Repository<InstaGuestFolder
     const saveNewInstaGuestFolderPlace = await this.save(
       newInstaGuestFolderPlace,
     );
-    return saveNewInstaGuestFolderPlace;
+    return { status: 'created', data: saveNewInstaGuestFolderPlace };
   }
 }
