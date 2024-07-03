@@ -17,6 +17,7 @@ import { TripModule } from './trip/trip.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomResponseInterceptor } from './common/interceptors/custom-response.interceptor';
 import { CustomExceptionFilter } from './common/filters/custom-exception.filter';
+import { FolderModule } from './folder/folder.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { CustomExceptionFilter } from './common/filters/custom-exception.filter'
     AuthModule,
     UserModule,
     TripModule,
+    FolderModule,
   ],
   controllers: [AppController],
   providers: [

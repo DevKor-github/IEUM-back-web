@@ -1,16 +1,15 @@
+import {
+  NotFoundInstaCollectionException,
+  NotValidInstaGuestUserException,
+} from './../common/exceptions/insta.exception';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FirstLoginDto } from './dtos/first-login.dto';
 import { UserRepository } from 'src/repositories/user.repository';
-import { BadRequestException } from '@nestjs/common';
 import { PreferenceRepository } from 'src/repositories/preference.repository';
 import { UserPreferenceDto } from './dtos/first-login.dto';
-import {
-  NotValidInstaGuestUserException,
-  NotValidUserException,
-} from 'src/common/exceptions/user.exception';
+import { NotValidUserException } from 'src/common/exceptions/user.exception';
 import { InstaGuestUserRepository } from 'src/repositories/insta-guest-user.repository';
 import { FolderRepository } from 'src/repositories/folder.repository';
-import { FolderType } from 'src/common/enums/folder-type.enum';
 import { FolderPlaceRepository } from 'src/repositories/folder-place.repository';
 
 @Injectable()
@@ -42,9 +41,7 @@ export class UserService {
   async deleteUser(id: number) {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-      throw new BadRequestException(
-        '해당 계정이 존재하지 않아 삭제할 수 없습니다.',
-      );
+      throw new NotValidUserException('존재하지 않는 계정이에요.');
     }
     await this.userRepository.softDeleteUser(id);
   }
