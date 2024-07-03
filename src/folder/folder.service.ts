@@ -29,8 +29,7 @@ export class FolderService {
   }
 
   async appendPlaceToInstaFolder(connectedUserId: number, placeId: number) {
-    const instaFolder =
-      await this.folderRepository.getInstaFolder(connectedUserId);
+    const instaFolder = await this.getInstaFolder(connectedUserId);
     const createdFolderPlace = await this.createFolderPlace(
       instaFolder.id,
       placeId,

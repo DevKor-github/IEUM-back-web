@@ -49,11 +49,9 @@ export class FolderRepository extends Repository<Folder> {
   }
 
   async getInstaFolder(userId: number) {
-    console.log(userId);
     let instaFolder = await this.findOne({
       where: { userId: userId, type: FolderType.Insta },
     });
-    console.log(instaFolder);
     if (!instaFolder) {
       instaFolder = await this.createFolder(
         userId,

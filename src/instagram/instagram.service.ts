@@ -68,7 +68,7 @@ export class InstagramService {
           );
         if (createdFolderPlace.status === 'created' && instaGuestUser.user) {
           await this.folderService.appendPlaceToInstaFolder(
-            instaGuestUser.id,
+            instaGuestUser.user.id,
             placeInfo.id,
           );
         }
