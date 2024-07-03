@@ -12,9 +12,14 @@ export class InstaGuestFolderRepository extends Repository<InstaGuestFolder> {
   async createInstaGuestFolder(
     instaGuestUser: InstaGuestUser,
   ): Promise<InstaGuestFolder> {
-    const instaGuestFolder = await this.findOne({
-      where: { instaGuestUser: instaGuestUser },
-    });
+    console.log(instaGuestUser);
+    const instaGuestFolder = await this.createQueryBuilder('instaGuestFolder')
+      .leftJoinAndSelect('instaGuestFolder.instaGuestUser', 'instaGuestUser')
+      .where('instaGuestUser.id = :instaGuestUserId', {
+        instaGuestUserId: instaGuestUser.id,
+      })
+      .getOne();
+    console.log(instaGuestFolder);
 
     if (instaGuestFolder) {
       return instaGuestFolder;

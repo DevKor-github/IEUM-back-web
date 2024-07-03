@@ -24,7 +24,7 @@ export class InstaGuestFolder {
     () => InstaGuestUser,
     (instaGuestUser) => instaGuestUser.instaGuestFolder,
   )
-  @JoinColumn({ name: 'instaGuestUser' })
+  @JoinColumn()
   instaGuestUser: InstaGuestUser;
 
   @OneToMany(

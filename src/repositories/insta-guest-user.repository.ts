@@ -15,6 +15,7 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
   ): Promise<InstaGuestUser> {
     const instaGuestUser = await this.findOne({
       where: { instaId: createInstaGuestUserDto.instaId },
+      relations: ['user'],
     });
     // console.log(instaGuestUser);
 
@@ -47,5 +48,20 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
       .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
       .groupBy('place.id')
       .getRawMany();
+  }
+
+  async getInstaGuestPlaces(
+    instaGuestUserId: number,
+  ): Promise<{ place_id: number }[]> {
+    const instaGuestPlaces = await this.createQueryBuilder('instaGuestUser')
+      .leftJoin('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
+      .leftJoin(
+        'instaGuestFolder.instaGuestFolderPlaces',
+        'instaGuestFolderPlace',
+      )
+      .select(['instaGuestFolderPlace.placeId AS place_id'])
+      .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
+      .getRawMany();
+    return instaGuestPlaces;
   }
 }

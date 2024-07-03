@@ -73,4 +73,10 @@ export class InstagramController {
       instaGuestCollectionId,
     );
   }
+
+  @Get('test/:instaId')
+  @ApiOperation({ summary: '테스트' })
+  async test(@Param('instaId') instaId: string = 'test') {
+    return this.instagramService.test(instaId);
+  }
 }
