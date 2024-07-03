@@ -1,5 +1,6 @@
 import { InstaGuestUser } from '../entities/insta-guest-user.entity';
 import { Injectable } from '@nestjs/common';
+import { RawInstaPlaceMarker } from 'src/common/interfaces/raw-insta-collection.interface';
 import { CreateInstaGuestUserDto } from 'src/instagram/dtos/create-insta-guest-user-dto';
 import { DataSource, Repository } from 'typeorm';
 
@@ -42,5 +43,24 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
       .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
       .getRawMany();
     return instaGuestPlaces;
+
+  async getMarkers(instaGuestUserId: number): Promise<RawInstaPlaceMarker[]> {
+    return await this.createQueryBuilder('instaGuestUser')
+      .leftJoinAndSelect('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
+      .leftJoinAndSelect(
+        'instaGuestFolder.instaGuestFolderPlaces',
+        'instaGuestFolderPlaces',
+      )
+      .leftJoinAndSelect('instaGuestFolderPlaces.place', 'place')
+      .select([
+        'place.id AS place_id',
+        'place.name AS place_name',
+        'place.latitude AS latitude',
+        'place.longitude AS longitude',
+        'place.primaryCategory AS primary_category',
+      ])
+      .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
+      .groupBy('place.id')
+      .getRawMany();
   }
 }

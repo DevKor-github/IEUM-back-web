@@ -1,5 +1,4 @@
-export interface RawInstaCollectionMarker {
-  insta_guest_collection_id: number;
+export interface RawInstaPlaceMarker {
   place_id: number;
   place_name: string;
   latitude: string;
