@@ -30,20 +30,6 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
     return saveNewInstaGuestUser;
   }
 
-  async getInstaGuestPlaces(
-    instaGuestUserId: number,
-  ): Promise<{ place_id: number }[]> {
-    const instaGuestPlaces = await this.createQueryBuilder('instaGuestUser')
-      .leftJoin('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
-      .leftJoin(
-        'instaGuestFolder.instaGuestFolderPlaces',
-        'instaGuestFolderPlace',
-      )
-      .select(['instaGuestFolderPlace.placeId AS place_id'])
-      .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
-      .getRawMany();
-    return instaGuestPlaces;
-
   async getMarkers(instaGuestUserId: number): Promise<RawInstaPlaceMarker[]> {
     return await this.createQueryBuilder('instaGuestUser')
       .leftJoinAndSelect('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
@@ -62,5 +48,20 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
       .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
       .groupBy('place.id')
       .getRawMany();
+  }
+
+  async getInstaGuestPlaces(
+    instaGuestUserId: number,
+  ): Promise<{ place_id: number }[]> {
+    const instaGuestPlaces = await this.createQueryBuilder('instaGuestUser')
+      .leftJoin('instaGuestUser.instaGuestFolder', 'instaGuestFolder')
+      .leftJoin(
+        'instaGuestFolder.instaGuestFolderPlaces',
+        'instaGuestFolderPlace',
+      )
+      .select(['instaGuestFolderPlace.placeId AS place_id'])
+      .where('instaGuestUser.id = :instaGuestUserId', { instaGuestUserId })
+      .getRawMany();
+    return instaGuestPlaces;
   }
 }
