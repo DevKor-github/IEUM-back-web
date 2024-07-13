@@ -5,6 +5,9 @@ export enum ErrorCodeEnum {
   NotValidRefresh = 1001,
   // aa = 20 : User
   NotValidUser = 2001,
+  // aa = 30 : Insta
+  NotValidInstaGuestUser = 3001,
+  NotFoundInstaCollection = 3002,
   // aa = 80 : Server Exception
   DefaultInternalServerError = 8000,
   // aa = 90 : Http default exception

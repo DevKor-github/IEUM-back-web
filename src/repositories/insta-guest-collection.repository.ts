@@ -6,7 +6,7 @@ import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant
 import {
   RawInstaCollection,
   RawInstaCollectionDetail,
-  RawInstaCollectionMarker,
+  RawInstaPlaceMarker,
 } from 'src/common/interfaces/raw-insta-collection.interface';
 
 @Injectable()
@@ -36,31 +36,11 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
     return saveNewInstaGuestCollection;
   }
 
-  async getMarkers(
-    instaGuestUserId: number,
-  ): Promise<RawInstaCollectionMarker[]> {
-    return await this.createQueryBuilder('instaGuestCollection')
-      .leftJoinAndSelect('instaGuestCollection.place', 'place')
-      .select([
-        'instaGuestCollection.id AS insta_guest_collection_id',
-        'instaGuestCollection.placeId AS place_id',
-        'place.name AS place_name',
-        'place.latitude AS latitude',
-        'place.longitude AS longitude',
-        'place.primaryCategory AS primary_category',
-      ])
-      .where('instaGuestCollection.instaGuestUserId = :instaGuestUserId', {
-        instaGuestUserId,
-      })
-      .groupBy('instaGuestCollection.id')
-      .addGroupBy('place.id')
-      .getRawMany();
-  }
-
   async getCollections(
     instaGuestUserId: number,
     region?: string,
     cursorId?: number,
+    placeId?: number,
   ): Promise<RawInstaCollection[]> {
     const query = this.createQueryBuilder('instaGuestCollection')
       .leftJoinAndSelect('instaGuestCollection.place', 'place')
@@ -96,6 +76,12 @@ export class InstaGuestCollectionRepository extends Repository<InstaGuestCollect
           region: `${region}%`,
         },
       ); // 특정 문자열로 시작하는 경우에는 인덱스를 타므로 성능 문제 X
+    }
+
+    if (placeId) {
+      query.andWhere('instaGuestCollection.placeId = :placeId', {
+        placeId,
+      });
     }
 
     if (cursorId) {

@@ -14,4 +14,7 @@ export class InstaCollectionReqQueryDto {
     example: '부산',
   })
   region: string;
+
+  @ApiProperty({ description: '특정 장소의 ID', required: false })
+  placeId: number;
 }

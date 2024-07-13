@@ -46,7 +46,7 @@ export class User extends BasicDate {
   @OneToOne(() => InstaGuestUser, (instaGuestUser) => instaGuestUser.user, {
     nullable: true,
   })
-  @JoinColumn({ name: 'instaGuestUserId' })
+  @JoinColumn()
   instaGuestUser?: InstaGuestUser;
 
   @Column('varchar', { nullable: true })

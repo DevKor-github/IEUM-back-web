@@ -1,17 +1,11 @@
 import { InstaGuestFolderPlaceRepository } from './../repositories/insta-guest-folder-place.repository';
-import { InstaGuestFolder } from './../entities/insta-guest-folder.entity';
 import { InstaCollectionReqQueryDto } from './dtos/insta-collection-req-query.dto';
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InstaGuestUserRepository } from '../repositories/insta-guest-user.repository';
 import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-collection.repository';
 import { InstaGuestCollection } from 'src/entities/insta-guest-collection.entity';
 import { CrawledInstagramDto } from './dtos/crawled-instagram-dto';
 import { PlaceService } from 'src/place/place.service';
-import { INSTA_COLLECTIONS_TAKE } from 'src/common/constants/pagination.constant';
 import {
   InstaCollectionMarkerDto,
   InstaCollectionMarkersListDto,
@@ -24,16 +18,30 @@ import {
 } from './dtos/insta-collection.dto';
 import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
 import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
+import { FolderService } from 'src/folder/folder.service';
+import {
+  NotFoundInstaCollectionException,
+  NotValidInstaGuestUserException,
+} from 'src/common/exceptions/insta.exception';
 
 @Injectable()
 export class InstagramService {
   constructor(
     private readonly placeService: PlaceService,
+    private readonly folderService: FolderService,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
     private readonly instaGuestFolderRepository: InstaGuestFolderRepository,
     private readonly instaGuestFolderPlaceRepository: InstaGuestFolderPlaceRepository,
   ) {}
+
+  async test(instaId: string) {
+    const instaGuestUser = await this.instaGuestUserRepository.findOne({
+      where: { instaId: instaId },
+      relations: ['user'],
+    });
+    return instaGuestUser.user ? instaGuestUser.user : 'no user';
+  }
 
   async crawlToDB(
     crawledInstagramDto: CrawledInstagramDto[],
@@ -53,10 +61,17 @@ export class InstagramService {
           await this.instaGuestFolderRepository.createInstaGuestFolder(
             instaGuestUser,
           );
-        await this.instaGuestFolderPlaceRepository.createInstaGuestFolderPlace(
-          placeInfo.id,
-          instaGuestFolder.id,
-        );
+        const createdFolderPlace =
+          await this.instaGuestFolderPlaceRepository.createInstaGuestFolderPlace(
+            placeInfo.id,
+            instaGuestFolder.id,
+          );
+        if (createdFolderPlace.status === 'created' && instaGuestUser.user) {
+          await this.folderService.appendPlaceToInstaFolder(
+            instaGuestUser.user.id,
+            placeInfo.id,
+          );
+        }
         const instaGuestCollection =
           await this.instaGuestCollectionRepository.createInstaGuestCollection({
             instaGuestUserId: instaGuestUser.id,
@@ -66,11 +81,9 @@ export class InstagramService {
             embeddedTag: dto.embeddedTag,
           });
         if (instaGuestCollection) {
-          //null값이 아니다 -> 새롭게 저장됐다.
           createdInstaGuestCollection.push(instaGuestCollection);
         }
       } catch (error) {
-        //에러를 호출자에게 전파 및 for loop 중단.
         throw new InternalServerErrorException(
           'crawled 데이터를 DB에 적재하는 과정에서 오류가 발생했습니다.',
           error.stack,
@@ -86,9 +99,11 @@ export class InstagramService {
       where: { instaId: instaId },
     });
     if (!instaGuestUser) {
-      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+      throw new NotValidInstaGuestUserException(
+        '해당하는 인스타그램 사용자가 없습니다.',
+      );
     }
-    const rawMarkers = await this.instaGuestCollectionRepository.getMarkers(
+    const rawMarkers = await this.instaGuestUserRepository.getMarkers(
       instaGuestUser.id,
     );
     const markersList = rawMarkers.map((rawMarker) => {
@@ -109,13 +124,16 @@ export class InstagramService {
       where: { instaId: instaId },
     });
     if (!instaGuestUser) {
-      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+      throw new NotValidInstaGuestUserException(
+        '해당하는 인스타그램 사용자가 없습니다.',
+      );
     }
     const rawInstaCollections =
       await this.instaGuestCollectionRepository.getCollections(
         instaGuestUser.id,
         instaCollectionReqQueryDto.region,
         instaCollectionReqQueryDto.cursorId,
+        instaCollectionReqQueryDto.placeId,
       );
     const collectionsList = rawInstaCollections.map((rawCollection) => {
       rawCollection.primary_category = this.translateCategoryName(
@@ -134,7 +152,9 @@ export class InstagramService {
       where: { instaId: instaId },
     });
     if (!instaGuestUser) {
-      throw new NotFoundException('해당하는 인스타그램 사용자가 없습니다.');
+      throw new NotValidInstaGuestUserException(
+        '해당하는 인스타그램 사용자가 없습니다.',
+      );
     }
     const rawDetail =
       await this.instaGuestCollectionRepository.getCollectionDetail(
@@ -142,7 +162,7 @@ export class InstagramService {
         instaGuestCollectionId,
       );
     if (!rawDetail) {
-      throw new NotFoundException('해당하는 컬렉션이 없습니다.');
+      throw new NotFoundInstaCollectionException('해당하는 컬렉션이 없습니다.');
     }
     rawDetail.primary_category = this.translateCategoryName(
       rawDetail.primary_category,
