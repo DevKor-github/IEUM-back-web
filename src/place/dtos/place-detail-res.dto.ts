@@ -25,8 +25,6 @@ export class PlaceDetailResDto {
 
   tags: string[];
 
-  images: string[];
-
   //인스타 게스트 컬렉션
   //장소 스케쥴
   //큐레이션-장소
@@ -44,7 +42,6 @@ export class PlaceDetailResDto {
       (placeCategory) => placeCategory.category.categoryName,
     );
     this.tags = place.placeTags?.map((placeTag) => placeTag.tag.tagName);
-    this.images = place.placeImages?.map((placeImage) => placeImage.image.url);
   }
 
   static fromCreation(
@@ -58,7 +55,6 @@ export class PlaceDetailResDto {
       ? categories.map((category) => category.categoryName)
       : [];
     placeDetailResDto.tags = [];
-    placeDetailResDto.images = [];
 
     return placeDetailResDto;
   }

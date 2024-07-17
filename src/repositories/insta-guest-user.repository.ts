@@ -15,7 +15,6 @@ export class InstaGuestUserRepository extends Repository<InstaGuestUser> {
   ): Promise<InstaGuestUser> {
     const instaGuestUser = await this.findOne({
       where: { instaId: createInstaGuestUserDto.instaId },
-      relations: ['user'],
     });
     // console.log(instaGuestUser);
 

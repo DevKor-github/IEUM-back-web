@@ -17,8 +17,6 @@ export class PlaceRepository extends Repository<Place> {
       .leftJoinAndSelect('placeCategories.category', 'category')
       .leftJoinAndSelect('place.placeTags', 'placeTags')
       .leftJoinAndSelect('placeTags.tag', 'tag')
-      .leftJoinAndSelect('place.placeImages', 'placeImages')
-      .leftJoinAndSelect('placeImages.image', 'image')
       .where('place.id = :placeId', { placeId })
       .getOne();
   }
