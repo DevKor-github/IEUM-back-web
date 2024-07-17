@@ -6,14 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { InstaGuestCollection } from './insta-guest-collection.entity';
-import { PlaceSchedule } from './place-schedule.entity';
-import { CurationPlace } from './curation-place.entity';
 import { PlaceCategory } from './place-category.entity';
 import { PlaceTag } from './place-tag.entity';
-import { PlaceImage } from './place-image.entity';
 import { OpenHours } from './open-hours.entity';
 import { AddressComponents } from './address-components.entity';
-import { FolderPlace } from './folder-place.entity';
 import { InstaGuestFolder } from './insta-guest-folder.entity';
 
 @Entity()
@@ -49,14 +45,6 @@ export class Place {
   )
   instaGuestCollections: InstaGuestCollection[];
 
-  //장소 스케쥴
-  @OneToMany(() => PlaceSchedule, (placeSchedule) => placeSchedule.place)
-  placeSchedules: PlaceSchedule[];
-
-  //큐레이션-장소
-  @OneToMany(() => CurationPlace, (curationPlace) => curationPlace.place)
-  curationPlaces: CurationPlace[];
-
   //장소-카테고리
   @OneToMany(() => PlaceCategory, (placeCategory) => placeCategory.place)
   placeCategories: PlaceCategory[];
@@ -75,14 +63,6 @@ export class Place {
     (addressComponents) => addressComponents.place,
   )
   addressComponents: AddressComponents;
-
-  //장소-이미지
-  @OneToMany(() => PlaceImage, (placeImage) => placeImage.place)
-  placeImages: PlaceImage[];
-
-  //폴더-장소
-  @OneToMany(() => FolderPlace, (folderPlace) => folderPlace.place)
-  folderPlaces: FolderPlace[];
 
   @OneToMany(
     () => InstaGuestFolder,

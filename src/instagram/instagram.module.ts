@@ -9,13 +9,11 @@ import { InstaGuestCollectionRepository } from 'src/repositories/insta-guest-col
 import { PlaceModule } from 'src/place/place.module';
 import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
 import { InstaGuestFolderPlaceRepository } from 'src/repositories/insta-guest-folder-place.repository';
-import { FolderModule } from 'src/folder/folder.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([InstaGuestUser, InstaGuestCollection]),
     PlaceModule,
-    FolderModule,
   ],
   controllers: [InstagramController],
   providers: [

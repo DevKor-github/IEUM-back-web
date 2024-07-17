@@ -7,7 +7,6 @@ import {
   Generated,
   Index,
 } from 'typeorm';
-import { User } from './user.entity';
 import { InstaGuestCollection } from './insta-guest-collection.entity';
 import { InstaGuestFolder } from './insta-guest-folder.entity';
 
@@ -28,9 +27,6 @@ export class InstaGuestUser {
     (instaGuestCollection) => instaGuestCollection.instaGuestUser,
   )
   instaGuestCollections: InstaGuestCollection[];
-
-  @OneToOne(() => User, (user) => user.instaGuestUser)
-  user?: User;
 
   @OneToOne(
     () => InstaGuestFolder,

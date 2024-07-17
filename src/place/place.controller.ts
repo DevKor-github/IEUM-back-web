@@ -60,12 +60,4 @@ export class PlaceController {
   async createPlaceTag(@Body() createPlaceTagReqDto: CreatePlaceTagReqDto) {
     return await this.placeService.createPlaceTag(createPlaceTagReqDto);
   }
-
-  @ApiOperation({ summary: 'Create placeImage' })
-  @Post('place-images')
-  async createPlaceImage(
-    @Body() createPlaceImageReqDto: CreatePlaceImageReqDto,
-  ) {
-    return await this.placeService.createPlaceImage(createPlaceImageReqDto);
-  }
 }

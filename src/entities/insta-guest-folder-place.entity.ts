@@ -5,8 +5,6 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
-import { FolderPlace } from './folder-place.entity';
-import { Folder } from './folder.entity';
 import { Place } from './place.entity';
 import { InstaGuestFolder } from './insta-guest-folder.entity';
 

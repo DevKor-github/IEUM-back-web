@@ -18,7 +18,6 @@ import {
 } from './dtos/insta-collection.dto';
 import { InstaCollectionDetailDto } from './dtos/insta-collection-detail.dto';
 import { InstaGuestFolderRepository } from 'src/repositories/insta-guest-folder.repository';
-import { FolderService } from 'src/folder/folder.service';
 import {
   NotFoundInstaCollectionException,
   NotValidInstaGuestUserException,
@@ -28,20 +27,11 @@ import {
 export class InstagramService {
   constructor(
     private readonly placeService: PlaceService,
-    private readonly folderService: FolderService,
     private readonly instaGuestUserRepository: InstaGuestUserRepository,
     private readonly instaGuestCollectionRepository: InstaGuestCollectionRepository,
     private readonly instaGuestFolderRepository: InstaGuestFolderRepository,
     private readonly instaGuestFolderPlaceRepository: InstaGuestFolderPlaceRepository,
   ) {}
-
-  async test(instaId: string) {
-    const instaGuestUser = await this.instaGuestUserRepository.findOne({
-      where: { instaId: instaId },
-      relations: ['user'],
-    });
-    return instaGuestUser.user ? instaGuestUser.user : 'no user';
-  }
 
   async crawlToDB(
     crawledInstagramDto: CrawledInstagramDto[],
@@ -66,12 +56,6 @@ export class InstagramService {
             placeInfo.id,
             instaGuestFolder.id,
           );
-        if (createdFolderPlace.status === 'created' && instaGuestUser.user) {
-          await this.folderService.appendPlaceToInstaFolder(
-            instaGuestUser.user.id,
-            placeInfo.id,
-          );
-        }
         const instaGuestCollection =
           await this.instaGuestCollectionRepository.createInstaGuestCollection({
             instaGuestUserId: instaGuestUser.id,

@@ -17,7 +17,6 @@ import {
   CreatePlaceTagReqDto,
 } from './dtos/create-place-relation-req.dto';
 import { PlaceTagRepository } from 'src/repositories/place-tag.repository';
-import { PlaceImageRepository } from 'src/repositories/place-image.repository';
 import { AddressComponents } from 'src/entities/address-components.entity';
 import { AddressComponentsRepository } from 'src/repositories/address-components.repository';
 import { Transactional } from 'typeorm-transactional';
@@ -32,7 +31,6 @@ export class PlaceService {
     private readonly categoryRepository: CategoryRepository,
     private readonly placeCategoryRepository: PlaceCategoryRepository,
     private readonly placeTagRepository: PlaceTagRepository,
-    private readonly placeImageRepository: PlaceImageRepository,
     private readonly addressComponentsRepository: AddressComponentsRepository,
   ) {}
 
@@ -133,16 +131,5 @@ export class PlaceService {
     });
     if (existedRelation) return existedRelation;
     return await this.placeTagRepository.save(createPlaceTagReqDto);
-  }
-
-  async createPlaceImage(createPlaceImageReqDto: CreatePlaceImageReqDto) {
-    const existedRelation = await this.placeImageRepository.findOne({
-      where: {
-        placeId: createPlaceImageReqDto.placeId,
-        imageId: createPlaceImageReqDto.imageId,
-      },
-    });
-    if (existedRelation) return existedRelation;
-    return await this.placeImageRepository.save(createPlaceImageReqDto);
   }
 }

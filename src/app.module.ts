@@ -10,14 +10,9 @@ import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { CategoryModule } from './category/category.module';
 import { TagModule } from './tag/tag.module';
-import { ImageModule } from './image/image.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { TripModule } from './trip/trip.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomResponseInterceptor } from './common/interceptors/custom-response.interceptor';
 import { CustomExceptionFilter } from './common/filters/custom-exception.filter';
-import { FolderModule } from './folder/folder.module';
 
 @Module({
   imports: [
@@ -48,11 +43,6 @@ import { FolderModule } from './folder/folder.module';
     PlaceModule,
     CategoryModule,
     TagModule,
-    ImageModule,
-    AuthModule,
-    UserModule,
-    TripModule,
-    FolderModule,
   ],
   controllers: [AppController],
   providers: [
