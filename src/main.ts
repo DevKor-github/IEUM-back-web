@@ -22,8 +22,8 @@ async function bootstrap() {
     }),
   );
   const config = new DocumentBuilder()
-    .setTitle('IEUM API')
-    .setDescription('IEUM Integrated API Docs')
+    .setTitle('IEUM WEB API')
+    .setDescription('IEUM WEB API Docs')
     .setVersion('0.1')
     .build();
   const document = SwaggerModule.createDocument(app, config);
